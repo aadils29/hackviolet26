@@ -3,8 +3,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Check if Clerk is configured
-const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('your_publishable_key');
+const isClerkConfigured =
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes(
+    "your_publishable_key",
+  );
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -21,7 +24,7 @@ function bypassMiddleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export default isClerkConfigured 
+export default isClerkConfigured
   ? clerkMiddleware(async (auth, request) => {
       if (!isPublicRoute(request)) {
         await auth.protect();

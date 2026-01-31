@@ -12,7 +12,12 @@ interface LessonCardProps {
   xpEarned?: number;
 }
 
-export function LessonCard({ lesson, status, lessonNumber, xpEarned }: LessonCardProps) {
+export function LessonCard({
+  lesson,
+  status,
+  lessonNumber,
+  xpEarned,
+}: LessonCardProps) {
   const statusStyles = {
     completed: "border-success/30 bg-success/5",
     current: "border-primary ring-2 ring-primary/20 bg-primary/5",
@@ -45,8 +50,10 @@ export function LessonCard({ lesson, status, lessonNumber, xpEarned }: LessonCar
               </span>
             </div>
             <h3 className="font-semibold text-lg">{lesson.title}</h3>
-            <p className="text-sm text-muted-foreground">{lesson.description}</p>
-            
+            <p className="text-sm text-muted-foreground">
+              {lesson.description}
+            </p>
+
             {status === "completed" && xpEarned && (
               <p className="text-sm text-success mt-2">+{xpEarned} XP earned</p>
             )}

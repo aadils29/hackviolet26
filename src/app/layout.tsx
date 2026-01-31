@@ -15,12 +15,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "FinEmpowerHer - Financial Literacy for Women",
-  description: "Learn personal finance through fun, bite-sized lessons. Build confidence with money, one lesson at a time.",
+  description:
+    "Learn personal finance through fun, bite-sized lessons. Build confidence with money, one lesson at a time.",
 };
 
 // Check if Clerk keys are configured
-const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('your_publishable_key');
+const isClerkConfigured =
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes(
+    "your_publishable_key",
+  );
 
 export default function RootLayout({
   children,
@@ -28,9 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const body = (
-    <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       {children}
     </body>
   );
@@ -39,16 +41,10 @@ export default function RootLayout({
   if (isClerkConfigured) {
     return (
       <ClerkProvider>
-        <html lang="en">
-          {body}
-        </html>
+        <html lang="en">{body}</html>
       </ClerkProvider>
     );
   }
 
-  return (
-    <html lang="en">
-      {body}
-    </html>
-  );
+  return <html lang="en">{body}</html>;
 }

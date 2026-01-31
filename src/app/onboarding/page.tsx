@@ -39,7 +39,7 @@ export default function OnboardingPage() {
         goal: selectedGoal,
         dailyMinutes: selectedTime,
         onboardingCompleted: true,
-      })
+      }),
     );
     // Initialize user progress
     localStorage.setItem(
@@ -51,7 +51,7 @@ export default function OnboardingPage() {
         heartsRemaining: 5,
         lastHeartLoss: null,
         lastCompletedLesson: null,
-      })
+      }),
     );
     router.push("/dashboard");
   };
@@ -68,8 +68,8 @@ export default function OnboardingPage() {
                 i === step
                   ? "bg-primary"
                   : i < step
-                  ? "bg-primary/50"
-                  : "bg-gray-200"
+                    ? "bg-primary/50"
+                    : "bg-gray-200"
               }`}
             />
           ))}
@@ -94,7 +94,11 @@ export default function OnboardingPage() {
                 Learn personal finance through fun, bite-sized lessons. Build
                 confidence with money, one lesson at a time.
               </p>
-              <Button size="lg" className="w-full py-6 text-lg" onClick={handleNext}>
+              <Button
+                size="lg"
+                className="w-full py-6 text-lg"
+                onClick={handleNext}
+              >
                 Let&apos;s Get Started →
               </Button>
             </motion.div>
@@ -178,7 +182,9 @@ export default function OnboardingPage() {
                   >
                     <CardContent className="flex items-center justify-between p-4">
                       <div>
-                        <div className="font-semibold text-lg">{time.label}</div>
+                        <div className="font-semibold text-lg">
+                          {time.label}
+                        </div>
                         <div className="text-sm text-muted-foreground">
                           {time.description}
                         </div>

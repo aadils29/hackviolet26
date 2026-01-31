@@ -29,8 +29,8 @@ export default function LandingPage() {
             <span className="text-primary">One Lesson at a Time</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Learn personal finance through fun, bite-sized lessons. Build confidence 
-            with money and take control of your financial future.
+            Learn personal finance through fun, bite-sized lessons. Build
+            confidence with money and take control of your financial future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/onboarding">
@@ -51,7 +51,8 @@ export default function LandingPage() {
               <div className="text-4xl mb-4">🎯</div>
               <h3 className="font-semibold text-lg mb-2">Simple</h3>
               <p className="text-muted-foreground">
-                Bite-sized lessons that fit your busy schedule. Learn in just 5 minutes a day.
+                Bite-sized lessons that fit your busy schedule. Learn in just 5
+                minutes a day.
               </p>
             </CardContent>
           </Card>
@@ -61,7 +62,8 @@ export default function LandingPage() {
               <div className="text-4xl mb-4">🎮</div>
               <h3 className="font-semibold text-lg mb-2">Fun</h3>
               <p className="text-muted-foreground">
-                Gamified learning with XP, streaks, and achievements to keep you motivated.
+                Gamified learning with XP, streaks, and achievements to keep you
+                motivated.
               </p>
             </CardContent>
           </Card>
@@ -71,7 +73,8 @@ export default function LandingPage() {
               <div className="text-4xl mb-4">✨</div>
               <h3 className="font-semibold text-lg mb-2">Effective</h3>
               <p className="text-muted-foreground">
-                Research-backed curriculum designed to build real financial skills.
+                Research-backed curriculum designed to build real financial
+                skills.
               </p>
             </CardContent>
           </Card>
@@ -86,9 +89,15 @@ export default function LandingPage() {
             <span>FinEmpowerHer © 2026</span>
           </div>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-primary">About</Link>
-            <Link href="#" className="hover:text-primary">Privacy</Link>
-            <Link href="#" className="hover:text-primary">Terms</Link>
+            <Link href="#" className="hover:text-primary">
+              About
+            </Link>
+            <Link href="#" className="hover:text-primary">
+              Privacy
+            </Link>
+            <Link href="#" className="hover:text-primary">
+              Terms
+            </Link>
           </div>
         </div>
       </footer>

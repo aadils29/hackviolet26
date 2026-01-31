@@ -85,11 +85,11 @@ export default function DashboardPage() {
   const completedLessonIds = lessonProgress
     .filter((lp) => lp.completed)
     .map((lp) => lp.lessonId);
-  
+
   const currentLessonIndex = completedLessonIds.length;
   const totalLessons = budgetingCourse.lessons.length;
   const courseProgress = (completedLessonIds.length / totalLessons) * 100;
-  
+
   const currentLesson = budgetingCourse.lessons[currentLessonIndex];
   const allLessonsCompleted = currentLessonIndex >= totalLessons;
 
@@ -112,7 +112,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-2xl">💰</span>
-              <span className="font-bold text-xl text-primary">FinEmpowerHer</span>
+              <span className="font-bold text-xl text-primary">
+                FinEmpowerHer
+              </span>
             </div>
             <div className="flex items-center gap-4">
               <StreakBadge streak={userProgress.currentStreak} />
@@ -134,7 +136,9 @@ export default function DashboardPage() {
               <div>
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-muted-foreground">Course Progress</span>
-                  <span className="font-medium">{Math.round(courseProgress)}%</span>
+                  <span className="font-medium">
+                    {Math.round(courseProgress)}%
+                  </span>
                 </div>
                 <Progress value={courseProgress} className="h-3" />
               </div>
@@ -147,33 +151,40 @@ export default function DashboardPage() {
         </Card>
 
         {/* Continue Learning Card */}
-        {!allLessonsCompleted && currentLesson && userProgress.heartsRemaining > 0 && (
-          <Card className="mb-6 border-primary bg-primary/5">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Continue Learning</p>
-                  <h2 className="text-xl font-bold">{currentLesson.title}</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Lesson {currentLessonIndex + 1} of {totalLessons}
-                  </p>
+        {!allLessonsCompleted &&
+          currentLesson &&
+          userProgress.heartsRemaining > 0 && (
+            <Card className="mb-6 border-primary bg-primary/5">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Continue Learning
+                    </p>
+                    <h2 className="text-xl font-bold">{currentLesson.title}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Lesson {currentLessonIndex + 1} of {totalLessons}
+                    </p>
+                  </div>
+                  <Link href={`/lesson/${currentLesson.id}`}>
+                    <Button size="lg">Continue →</Button>
+                  </Link>
                 </div>
-                <Link href={`/lesson/${currentLesson.id}`}>
-                  <Button size="lg">Continue →</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          )}
 
         {/* Out of Hearts Warning */}
         {userProgress.heartsRemaining === 0 && (
           <Card className="mb-6 border-destructive bg-destructive/5">
             <CardContent className="p-6 text-center">
               <div className="text-4xl mb-2">💔</div>
-              <h2 className="text-xl font-bold text-destructive mb-2">Out of Hearts!</h2>
+              <h2 className="text-xl font-bold text-destructive mb-2">
+                Out of Hearts!
+              </h2>
               <p className="text-muted-foreground">
-                Your hearts will refill tomorrow. Come back then to continue learning!
+                Your hearts will refill tomorrow. Come back then to continue
+                learning!
               </p>
             </CardContent>
           </Card>
@@ -184,7 +195,9 @@ export default function DashboardPage() {
           <Card className="mb-6 border-success bg-success/5">
             <CardContent className="p-6 text-center">
               <div className="text-4xl mb-2">🎉</div>
-              <h2 className="text-xl font-bold text-success mb-2">Course Completed!</h2>
+              <h2 className="text-xl font-bold text-success mb-2">
+                Course Completed!
+              </h2>
               <p className="text-muted-foreground">
                 Congratulations! You&apos;ve mastered Budgeting Basics.
               </p>

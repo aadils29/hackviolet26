@@ -45,7 +45,8 @@ export const budgetingCourse: Course = {
             "A type of savings account",
           ],
           correctAnswer: 0,
-          explanation: "A budget is a plan that helps you track and manage how you spend your money each month.",
+          explanation:
+            "A budget is a plan that helps you track and manage how you spend your money each month.",
         },
         {
           id: "q1-2",
@@ -53,7 +54,8 @@ export const budgetingCourse: Course = {
           question: "Budgeting is only for people who don't have much money.",
           options: ["True", "False"],
           correctAnswer: 1,
-          explanation: "Budgeting is beneficial for everyone, regardless of income level. It helps you make intentional decisions about your money.",
+          explanation:
+            "Budgeting is beneficial for everyone, regardless of income level. It helps you make intentional decisions about your money.",
         },
         {
           id: "q1-3",
@@ -66,7 +68,8 @@ export const budgetingCourse: Course = {
             "It automatically saves money for you",
           ],
           correctAnswer: 1,
-          explanation: "A budget gives you visibility into your spending patterns and helps you make informed financial decisions.",
+          explanation:
+            "A budget gives you visibility into your spending patterns and helps you make informed financial decisions.",
         },
         {
           id: "q1-4",
@@ -79,7 +82,8 @@ export const budgetingCourse: Course = {
             "Never, once it's set",
           ],
           correctAnswer: 2,
-          explanation: "Regular review helps you stay on track and adjust for changes in your income or expenses.",
+          explanation:
+            "Regular review helps you stay on track and adjust for changes in your income or expenses.",
         },
         {
           id: "q1-5",
@@ -87,7 +91,8 @@ export const budgetingCourse: Course = {
           question: "A budget restricts your freedom with money.",
           options: ["True", "False"],
           correctAnswer: 1,
-          explanation: "A budget actually gives you more freedom by helping you prioritize what matters most to you.",
+          explanation:
+            "A budget actually gives you more freedom by helping you prioritize what matters most to you.",
         },
       ],
     },
@@ -108,7 +113,8 @@ export const budgetingCourse: Course = {
             "Money you owe others",
           ],
           correctAnswer: 1,
-          explanation: "Income is any money that comes to you, including wages, tips, gifts, and investment returns.",
+          explanation:
+            "Income is any money that comes to you, including wages, tips, gifts, and investment returns.",
         },
         {
           id: "q2-2",
@@ -121,7 +127,8 @@ export const budgetingCourse: Course = {
             "Dining out",
           ],
           correctAnswer: 2,
-          explanation: "Fixed expenses stay the same each month, like rent, insurance, or car payments.",
+          explanation:
+            "Fixed expenses stay the same each month, like rent, insurance, or car payments.",
         },
         {
           id: "q2-3",
@@ -129,7 +136,8 @@ export const budgetingCourse: Course = {
           question: "Variable expenses change from month to month.",
           options: ["True", "False"],
           correctAnswer: 0,
-          explanation: "Variable expenses like groceries, gas, and entertainment can fluctuate based on your choices and needs.",
+          explanation:
+            "Variable expenses like groceries, gas, and entertainment can fluctuate based on your choices and needs.",
         },
         {
           id: "q2-4",
@@ -142,7 +150,8 @@ export const budgetingCourse: Course = {
             "Money from side jobs only",
           ],
           correctAnswer: 1,
-          explanation: "Net income is your take-home pay after taxes and other deductions are removed.",
+          explanation:
+            "Net income is your take-home pay after taxes and other deductions are removed.",
         },
         {
           id: "q2-5",
@@ -155,7 +164,8 @@ export const budgetingCourse: Course = {
             "Investment portfolio",
           ],
           correctAnswer: 1,
-          explanation: "A budget deficit means you're spending more than you make, which can lead to debt.",
+          explanation:
+            "A budget deficit means you're spending more than you make, which can lead to debt.",
         },
       ],
     },
@@ -176,12 +186,14 @@ export const budgetingCourse: Course = {
             "Entertainment",
           ],
           correctAnswer: 0,
-          explanation: "50% of your income should go to needs - essential expenses like rent, utilities, and groceries.",
+          explanation:
+            "50% of your income should go to needs - essential expenses like rent, utilities, and groceries.",
         },
         {
           id: "q3-2",
           type: "multiple-choice",
-          question: "Which category does 'dining out' fall under in the 50/30/20 rule?",
+          question:
+            "Which category does 'dining out' fall under in the 50/30/20 rule?",
           options: [
             "Needs (50%)",
             "Wants (30%)",
@@ -189,15 +201,18 @@ export const budgetingCourse: Course = {
             "None of the above",
           ],
           correctAnswer: 1,
-          explanation: "Dining out is a 'want' because you could prepare food at home instead.",
+          explanation:
+            "Dining out is a 'want' because you could prepare food at home instead.",
         },
         {
           id: "q3-3",
           type: "true-false",
-          question: "The 20% for savings includes emergency fund contributions.",
+          question:
+            "The 20% for savings includes emergency fund contributions.",
           options: ["True", "False"],
           correctAnswer: 0,
-          explanation: "The 20% savings category includes emergency funds, retirement savings, and extra debt payments.",
+          explanation:
+            "The 20% savings category includes emergency funds, retirement savings, and extra debt payments.",
         },
         {
           id: "q3-4",
@@ -205,15 +220,18 @@ export const budgetingCourse: Course = {
           question: "If you earn $3,000/month, how much should go to 'wants'?",
           options: ["$600", "$900", "$1,500", "$1,200"],
           correctAnswer: 1,
-          explanation: "30% of $3,000 is $900, which is the amount recommended for wants.",
+          explanation:
+            "30% of $3,000 is $900, which is the amount recommended for wants.",
         },
         {
           id: "q3-5",
           type: "true-false",
-          question: "The 50/30/20 rule works perfectly for everyone without adjustment.",
+          question:
+            "The 50/30/20 rule works perfectly for everyone without adjustment.",
           options: ["True", "False"],
           correctAnswer: 1,
-          explanation: "The 50/30/20 rule is a guideline. You may need to adjust based on your situation, especially in high cost-of-living areas.",
+          explanation:
+            "The 50/30/20 rule is a guideline. You may need to adjust based on your situation, especially in high cost-of-living areas.",
         },
       ],
     },
@@ -234,7 +252,8 @@ export const budgetingCourse: Course = {
             "It's not important",
           ],
           correctAnswer: 1,
-          explanation: "Tracking helps you see where your money actually goes and find areas to improve.",
+          explanation:
+            "Tracking helps you see where your money actually goes and find areas to improve.",
         },
         {
           id: "q4-2",
@@ -247,7 +266,8 @@ export const budgetingCourse: Course = {
             "A type of investment",
           ],
           correctAnswer: 1,
-          explanation: "Spending leaks are small purchases (like daily coffee) that seem minor but add up significantly over time.",
+          explanation:
+            "Spending leaks are small purchases (like daily coffee) that seem minor but add up significantly over time.",
         },
         {
           id: "q4-3",
@@ -255,7 +275,8 @@ export const budgetingCourse: Course = {
           question: "You should track only large purchases, not small ones.",
           options: ["True", "False"],
           correctAnswer: 1,
-          explanation: "Small purchases often add up to more than we realize. Tracking everything gives the full picture.",
+          explanation:
+            "Small purchases often add up to more than we realize. Tracking everything gives the full picture.",
         },
         {
           id: "q4-4",
@@ -268,7 +289,8 @@ export const budgetingCourse: Course = {
             "Reviewing bank statements regularly",
           ],
           correctAnswer: 2,
-          explanation: "Guessing leads to inaccurate tracking. Use actual records for best results.",
+          explanation:
+            "Guessing leads to inaccurate tracking. Use actual records for best results.",
         },
         {
           id: "q4-5",
@@ -281,7 +303,8 @@ export const budgetingCourse: Course = {
             "They're illegal",
           ],
           correctAnswer: 1,
-          explanation: "Unused subscriptions quietly drain money. Regular review helps catch these.",
+          explanation:
+            "Unused subscriptions quietly drain money. Regular review helps catch these.",
         },
       ],
     },
@@ -302,15 +325,18 @@ export const budgetingCourse: Course = {
             "Every day",
           ],
           correctAnswer: 2,
-          explanation: "Life changes, and your budget should adapt to reflect new circumstances.",
+          explanation:
+            "Life changes, and your budget should adapt to reflect new circumstances.",
         },
         {
           id: "q5-2",
           type: "true-false",
-          question: "It's okay if you don't stick to your budget perfectly every month.",
+          question:
+            "It's okay if you don't stick to your budget perfectly every month.",
           options: ["True", "False"],
           correctAnswer: 0,
-          explanation: "Budgets are guides, not strict rules. The goal is progress, not perfection.",
+          explanation:
+            "Budgets are guides, not strict rules. The goal is progress, not perfection.",
         },
         {
           id: "q5-3",
@@ -323,7 +349,8 @@ export const budgetingCourse: Course = {
             "Start over next year",
           ],
           correctAnswer: 2,
-          explanation: "If you overspend in one area, try to reduce spending elsewhere to stay on track.",
+          explanation:
+            "If you overspend in one area, try to reduce spending elsewhere to stay on track.",
         },
         {
           id: "q5-4",
@@ -336,15 +363,18 @@ export const budgetingCourse: Course = {
             "Get a second job",
           ],
           correctAnswer: 2,
-          explanation: "Start by looking at non-essential 'wants' - these are usually easier to reduce than needs.",
+          explanation:
+            "Start by looking at non-essential 'wants' - these are usually easier to reduce than needs.",
         },
         {
           id: "q5-5",
           type: "true-false",
-          question: "A budget that worked last year will always work this year.",
+          question:
+            "A budget that worked last year will always work this year.",
           options: ["True", "False"],
           correctAnswer: 1,
-          explanation: "Circumstances change (inflation, life events, goals), so budgets need regular updates.",
+          explanation:
+            "Circumstances change (inflation, life events, goals), so budgets need regular updates.",
         },
       ],
     },
@@ -357,9 +387,12 @@ export function getLessonById(lessonId: string): Lesson | undefined {
 
 export function getNextLesson(currentLessonId: string): Lesson | undefined {
   const currentIndex = budgetingCourse.lessons.findIndex(
-    (lesson) => lesson.id === currentLessonId
+    (lesson) => lesson.id === currentLessonId,
   );
-  if (currentIndex === -1 || currentIndex === budgetingCourse.lessons.length - 1) {
+  if (
+    currentIndex === -1 ||
+    currentIndex === budgetingCourse.lessons.length - 1
+  ) {
     return undefined;
   }
   return budgetingCourse.lessons[currentIndex + 1];

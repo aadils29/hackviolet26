@@ -8,7 +8,11 @@ interface XpProgressProps {
   xpPerLevel?: number;
 }
 
-export function XpProgress({ currentXp, currentLevel, xpPerLevel = 100 }: XpProgressProps) {
+export function XpProgress({
+  currentXp,
+  currentLevel,
+  xpPerLevel = 100,
+}: XpProgressProps) {
   const xpInCurrentLevel = currentXp % xpPerLevel;
   const progressPercent = (xpInCurrentLevel / xpPerLevel) * 100;
 
