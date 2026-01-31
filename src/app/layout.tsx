@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FinFemme - Financial Literacy for Women",
+  title: "finfeme - Financial Literacy for Women",
   description:
     "Learn personal finance through fun, bite-sized lessons. Build confidence with money, one lesson at a time.",
 };

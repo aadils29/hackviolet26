@@ -100,8 +100,12 @@ export default function DashboardPage() {
           <div className="px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">💰</span>
-                <span className="font-bold text-xl text-primary">FinFemme</span>
+                <img
+                  src="/logo-only.png"
+                  alt="FinFemme Logo"
+                  className="h-8 w-8"
+                />
+                <img src="/F.png" alt="FinFemme" className="h-6" />
               </div>
               <div className="flex items-center gap-3">
                 <StreakBadge streak={userProgress.currentStreak} />

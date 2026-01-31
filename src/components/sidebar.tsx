@@ -32,10 +32,13 @@ export function Sidebar() {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 bg-white border-r flex-col z-20">
         {/* Logo */}
-        <div className="p-6 border-b">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-2xl">💰</span>
-            <span className="font-bold text-xl text-primary">FinFemme</span>
+        <div className="p-4 border-b">
+          <Link href="/dashboard" className="flex items-center justify-center">
+            <img
+              src="/wordandlogo.svg"
+              alt="finfeme"
+              className="w-full max-w-[220px]"
+            />
           </Link>
         </div>
 

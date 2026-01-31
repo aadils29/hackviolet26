@@ -7,9 +7,8 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
       {/* Header */}
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">💰</span>
-          <span className="font-bold text-xl text-primary">FinFemme</span>
+        <div className="flex items-center">
+          <img src="/wordandlogopurple.svg" alt="finfeme" className="h-12" />
         </div>
         <div className="flex gap-3">
           <Link href="/sign-in">
@@ -85,8 +84,8 @@ export default function LandingPage() {
       <footer className="container mx-auto px-4 py-8 mt-16 border-t">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <span>💰</span>
-            <span>FinFemme © 2026</span>
+            <img src="/wordandlogopurple.svg" alt="finfeme" className="h-8" />
+            <span>© 2026</span>
           </div>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-primary">
