@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent } from "@/components/ui/card";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
-import { XpProgress } from "@/components/xp-progress";
-import { LessonCard } from "@/components/lesson-card";
+import { LearningPath } from "@/components/learning-path";
+import { Sidebar } from "@/components/sidebar";
 import { budgetingCourse } from "@/data/lessons";
 
 interface UserProgress {
@@ -90,89 +87,61 @@ export default function DashboardPage() {
   const totalLessons = budgetingCourse.lessons.length;
   const courseProgress = (completedLessonIds.length / totalLessons) * 100;
 
-  const currentLesson = budgetingCourse.lessons[currentLessonIndex];
   const allLessonsCompleted = currentLessonIndex >= totalLessons;
-
-  const getLessonStatus = (lessonId: string, index: number) => {
-    if (completedLessonIds.includes(lessonId)) return "completed";
-    if (index === currentLessonIndex) return "current";
-    return "locked";
-  };
-
-  const getLessonXp = (lessonId: string) => {
-    const lp = lessonProgress.find((p) => p.lessonId === lessonId);
-    return lp?.xpEarned || 0;
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">💰</span>
-              <span className="font-bold text-xl text-primary">
-                FinEmpowerHer
-              </span>
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="md:ml-64">
+        {/* Mobile Header */}
+        <header className="md:hidden bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">💰</span>
+                <span className="font-bold text-xl text-primary">
+                  FinEmpowerHer
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <StreakBadge streak={userProgress.currentStreak} />
+                <HeartDisplay hearts={userProgress.heartsRemaining} />
+              </div>
             </div>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8 max-w-lg pb-24 md:pb-8">
+          {/* Desktop Header */}
+          <div className="hidden md:flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold">Learn</h1>
             <div className="flex items-center gap-4">
               <StreakBadge streak={userProgress.currentStreak} />
               <HeartDisplay hearts={userProgress.heartsRemaining} />
             </div>
           </div>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Progress Overview */}
-        <Card className="mb-6">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Your Progress</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Course Progress</span>
-                  <span className="font-medium">
-                    {Math.round(courseProgress)}%
-                  </span>
+          {/* Stats Bar */}
+          <Card className="mb-8">
+            <CardContent className="p-4">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-primary">{userProgress.currentXp}</p>
+                  <p className="text-xs text-muted-foreground">Total XP</p>
                 </div>
-                <Progress value={courseProgress} className="h-3" />
+              <div>
+                <p className="text-2xl font-bold text-orange-500">{userProgress.currentStreak}</p>
+                <p className="text-xs text-muted-foreground">Day Streak</p>
               </div>
-              <XpProgress
-                currentXp={userProgress.currentXp}
-                currentLevel={userProgress.currentLevel}
-              />
+              <div>
+                <p className="text-2xl font-bold text-success">{completedLessonIds.length}/{totalLessons}</p>
+                <p className="text-xs text-muted-foreground">Lessons</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Continue Learning Card */}
-        {!allLessonsCompleted &&
-          currentLesson &&
-          userProgress.heartsRemaining > 0 && (
-            <Card className="mb-6 border-primary bg-primary/5">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Continue Learning
-                    </p>
-                    <h2 className="text-xl font-bold">{currentLesson.title}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Lesson {currentLessonIndex + 1} of {totalLessons}
-                    </p>
-                  </div>
-                  <Link href={`/lesson/${currentLesson.id}`}>
-                    <Button size="lg">Continue →</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
         {/* Out of Hearts Warning */}
         {userProgress.heartsRemaining === 0 && (
@@ -190,37 +159,20 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        {/* Course Completed */}
-        {allLessonsCompleted && (
-          <Card className="mb-6 border-success bg-success/5">
-            <CardContent className="p-6 text-center">
-              <div className="text-4xl mb-2">🎉</div>
-              <h2 className="text-xl font-bold text-success mb-2">
-                Course Completed!
-              </h2>
-              <p className="text-muted-foreground">
-                Congratulations! You&apos;ve mastered Budgeting Basics.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* Course Title */}
+        <div className="text-center mb-4">
+          <h2 className="text-2xl font-bold">{budgetingCourse.title}</h2>
+          <p className="text-muted-foreground">{budgetingCourse.description}</p>
+        </div>
 
         {/* Learning Path */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">{budgetingCourse.title}</h2>
-          <div className="space-y-3">
-            {budgetingCourse.lessons.map((lesson, index) => (
-              <LessonCard
-                key={lesson.id}
-                lesson={lesson}
-                lessonNumber={index + 1}
-                status={getLessonStatus(lesson.id, index)}
-                xpEarned={getLessonXp(lesson.id)}
-              />
-            ))}
-          </div>
-        </div>
-      </main>
+        <LearningPath
+          lessons={budgetingCourse.lessons}
+          completedLessonIds={completedLessonIds}
+          currentLessonIndex={currentLessonIndex}
+        />
+        </main>
+      </div>
     </div>
   );
 }
