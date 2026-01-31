@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { LearningPath } from "@/components/learning-path";
@@ -31,6 +32,9 @@ export default function BudgetingPage() {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPassage, setShowPassage] = useState(false);
+
+  const passageText = `A budget is a plan for how you spend your money each month. To create one, list your income and expenses, then track what you actually spend. Categories include needs like housing and food, and wants like entertainment. If you overspend, adjust by cutting non-essential expenses. Sticking to a budget helps you reach financial goals and avoid debt. Review it regularly and be flexible with changes in your life.`;
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -122,7 +126,18 @@ export default function BudgetingPage() {
               <p className="text-xl text-muted-foreground">
                 Continue your journey to financial confidence
               </p>
+              <Button onClick={() => setShowPassage(!showPassage)}>
+                {showPassage ? "Hide" : "Read"} Course Overview
+              </Button>
             </div>
+
+            {showPassage && (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-justify">{passageText}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Progress Overview */}
             <Card>

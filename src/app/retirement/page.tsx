@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { LearningPath } from "@/components/learning-path";
@@ -31,6 +32,9 @@ export default function RetirementPage() {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPassage, setShowPassage] = useState(false);
+
+  const passageText = `Retirement planning helps you save money for when you stop working. A 401(k) is a savings plan from your job where you put money aside before taxes, and your employer might add extra money. IRAs are personal savings accounts for retirement; traditional ones let you deduct taxes now, while Roth ones let you withdraw tax-free later. Social Security gives monthly payments from the government, starting at age 62, and waiting longer increases the amount. Pensions are plans where your employer promises a fixed monthly payment in retirement. For long-term strategies, invest regularly (dollar-cost averaging), stay invested over time, use target-date funds that adjust automatically, and aim to save 15-20% of your income for retirement.`;
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -122,7 +126,18 @@ export default function RetirementPage() {
               <p className="text-xl text-muted-foreground">
                 Plan for your financial future
               </p>
+              <Button onClick={() => setShowPassage(!showPassage)}>
+                {showPassage ? "Hide" : "Read"} Course Overview
+              </Button>
             </div>
+
+            {showPassage && (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-justify">{passageText}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Progress Overview */}
             <Card>

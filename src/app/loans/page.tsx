@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { LearningPath } from "@/components/learning-path";
@@ -31,6 +32,9 @@ export default function LoansPage() {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPassage, setShowPassage] = useState(false);
+
+  const passageText = `Mortgages are loans for buying homes, secured by the property. Fixed-rate mortgages keep the same interest rate, while adjustable ones can change. PMI protects lenders for down payments under 20%. Home equity loans borrow against home value with fixed rates. Personal loans are unsecured for various uses, with 1-7 year terms. Student loans include federal (with income-driven plans) and private. Auto loans are secured by the vehicle, with 5-7 year terms typically. Negative equity means owing more than the asset's value.`;
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -122,7 +126,18 @@ export default function LoansPage() {
               <p className="text-xl text-muted-foreground">
                 Understand different types of loans and borrowing
               </p>
+              <Button onClick={() => setShowPassage(!showPassage)}>
+                {showPassage ? "Hide" : "Read"} Course Overview
+              </Button>
             </div>
+
+            {showPassage && (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-justify">{passageText}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Progress Overview */}
             <Card>

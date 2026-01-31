@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { LearningPath } from "@/components/learning-path";
@@ -31,6 +32,9 @@ export default function CreditPage() {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPassage, setShowPassage] = useState(false);
+
+  const passageText = `Credit cards let you borrow money for purchases, while debit cards use your own funds. Credit cards help build your credit score by showing responsible use. Check your credit report yearly for free. Credit utilization should be under 30%. Rewards include cash back or points. Manage debt by paying high-interest first (avalanche method). Protect cards with strong PINs, monitor statements, and report loss immediately. Two-factor authentication adds security.`;
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -122,7 +126,18 @@ export default function CreditPage() {
               <p className="text-xl text-muted-foreground">
                 Master the use of credit and debit cards
               </p>
+              <Button onClick={() => setShowPassage(!showPassage)}>
+                {showPassage ? "Hide" : "Read"} Course Overview
+              </Button>
             </div>
+
+            {showPassage && (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-justify">{passageText}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Progress Overview */}
             <Card>

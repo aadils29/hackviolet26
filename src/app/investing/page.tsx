@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { LearningPath } from "@/components/learning-path";
@@ -31,6 +32,9 @@ export default function InvestingPage() {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPassage, setShowPassage] = useState(false);
+
+  const passageText = `Investing means putting money into assets that can grow over time. Stocks represent ownership in companies and can increase in value. Bonds are loans to governments or companies that pay interest. Mutual funds pool money to buy stocks and bonds, while ETFs trade like stocks and often track indexes. Diversification spreads investments to reduce risk. Risk management includes understanding volatility, using stop-loss orders, and matching risk to your goals. Time in the market beats timing it.`;
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -122,7 +126,18 @@ export default function InvestingPage() {
               <p className="text-xl text-muted-foreground">
                 Learn the fundamentals of investing
               </p>
+              <Button onClick={() => setShowPassage(!showPassage)}>
+                {showPassage ? "Hide" : "Read"} Course Overview
+              </Button>
             </div>
+
+            {showPassage && (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-justify">{passageText}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Progress Overview */}
             <Card>
