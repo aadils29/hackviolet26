@@ -5,10 +5,34 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   {
-    href: "/dashboard",
-    label: "Learn",
-    icon: "📚",
-    activeIcon: "📖",
+    href: "/budgeting",
+    label: "Budgeting",
+    icon: "💰",
+    activeIcon: "💵",
+  },
+  {
+    href: "/retirement",
+    label: "Retirement",
+    icon: "🏦",
+    activeIcon: "💼",
+  },
+  {
+    href: "/investing",
+    label: "Investing",
+    icon: "📈",
+    activeIcon: "📊",
+  },
+  {
+    href: "/credit",
+    label: "Credit",
+    icon: "💳",
+    activeIcon: "💳",
+  },
+  {
+    href: "/loans",
+    label: "Loans",
+    icon: "🏠",
+    activeIcon: "🏡",
   },
   {
     href: "/quests",
