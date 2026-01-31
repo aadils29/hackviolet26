@@ -16,20 +16,41 @@ export default function SignUpPage() {
     setIsLoading(true);
     setError("");
 
-    // For demo purposes, sign in directly after "registration"
-    // In production, you'd create the user in your database first
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: "/onboarding",
-    });
+    try {
+      // First, register the user
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    if (result?.error) {
-      setError("Could not create account. Please try again.");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Could not create account");
+        setIsLoading(false);
+        return;
+      }
+
+      // Then sign them in
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/onboarding",
+      });
+
+      if (result?.error) {
+        setError(
+          "Account created but could not sign in. Please try signing in.",
+        );
+        setIsLoading(false);
+      } else if (result?.url) {
+        window.location.href = result.url;
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
       setIsLoading(false);
-    } else if (result?.url) {
-      window.location.href = result.url;
     }
   };
 

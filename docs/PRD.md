@@ -12,13 +12,30 @@
 
 ---
 
-## 2. Tech Stack (Frontend Focus)
+## 2. Tech Stack
 
-- **Framework:** Next.js 14 with App Router
+- **Framework:** Next.js 16 with App Router
 - **UI:** Shadcn UI + Tailwind CSS
-- **Auth:** NextAuth.js (supports Google OAuth + Credentials)
+- **Database:** SQLite with Prisma ORM
+- **Auth:** NextAuth.js with Prisma Adapter (Google OAuth + Credentials with bcrypt password hashing)
 - **Animations:** Framer Motion (minimal)
 - **Deployment:** Vercel
+
+### Database Architecture
+
+```
+prisma/
+├── schema.prisma    # Database schema definition
+├── dev.db           # SQLite database file (local dev)
+└── migrations/      # Database migration history
+```
+
+**Why SQLite + Prisma?**
+
+- Zero external dependencies (database is a local file)
+- Type-safe database queries with Prisma Client
+- Easy migration to PostgreSQL/MySQL for production
+- Built-in NextAuth.js adapter support
 
 ---
 
@@ -386,47 +403,108 @@ Lesson 5: Adjusting Your Budget 🔒
 
 ---
 
-## 9. Data Models (Frontend Perspective)
+## 9. Data Models (Database Schema)
 
-### User Object
+### Prisma Schema
 
-```typescript
-{
-  id: string
-  email: string
-  name: string
-  avatarUrl?: string
-  createdAt: Date
-  dailyGoalMinutes: 5 | 10 | 15
-  primaryGoal: string
+The database is managed via Prisma ORM with SQLite. Schema defined in `prisma/schema.prisma`.
+
+### Authentication Models (NextAuth.js)
+
+```prisma
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed with bcrypt for credentials auth
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 ```
 
-### Progress Object
+### Future: User Progress Models (To Be Added)
 
-```typescript
-{
-  userId: string;
-  currentXp: number;
-  currentLevel: number;
-  currentStreak: number;
-  heartsRemaining: number;
-  lastHeartLoss: Date;
-  lastCompletedLesson: Date;
+```prisma
+model UserProgress {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  currentXp           Int      @default(0)
+  currentLevel        Int      @default(1)
+  currentStreak       Int      @default(0)
+  heartsRemaining     Int      @default(5)
+  lastHeartLoss       DateTime?
+  lastCompletedLesson DateTime?
+  dailyGoalMinutes    Int      @default(5)
+  primaryGoal         String?
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean  @default(false)
+  accuracy    Float    @default(0)
+  xpEarned    Int      @default(0)
+  completedAt DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
 }
 ```
 
-### Lesson Progress
+### Database Commands
 
-```typescript
-{
-  userId: string
-  lessonId: string
-  completed: boolean
-  accuracy: number
-  xpEarned: number
-  completedAt?: Date
-}
+```bash
+# View database in browser GUI
+npx prisma studio
+
+# Run migrations after schema changes
+npx prisma migrate dev --name <migration_name>
+
+# Generate Prisma Client after schema changes
+npx prisma generate
+
+# Reset database (caution: deletes all data)
+npx prisma migrate reset
 ```
 
 ---

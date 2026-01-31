@@ -1,15 +1,19 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     // Google OAuth Provider
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    // Credentials Provider for email/password (optional, for demo/dev)
+    // Credentials Provider for email/password
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -21,16 +25,32 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // For demo purposes - in production, validate against a database
-        if (credentials?.email && credentials?.password) {
-          // Demo user - replace with real authentication logic
-          return {
-            id: "1",
-            name: "Demo User",
-            email: credentials.email,
-          };
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-        return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        );
+
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
