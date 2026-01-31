@@ -16,7 +16,7 @@
 
 - **Framework:** Next.js 14 with App Router
 - **UI:** Shadcn UI + Tailwind CSS
-- **Auth:** Clerk
+- **Auth:** NextAuth.js (supports Google OAuth + Credentials)
 - **Animations:** Framer Motion (minimal)
 - **Deployment:** Vercel
 
@@ -26,7 +26,7 @@
 
 ### 3.1 Essential Features
 
-1. **User Authentication** (Clerk)
+1. **User Authentication** (NextAuth.js)
 2. **Learning Path** (1 course with 5 lessons)
 3. **Lesson Interface** (questions + immediate feedback)
 4. **Hearts System** (5 hearts, refill daily)
@@ -47,7 +47,7 @@
 ## 4. User Flow
 
 ```
-1. Landing Page → Sign Up (Clerk)
+1. Landing Page → Sign Up (NextAuth.js)
 2. Quick Onboarding (3 screens max)
 3. Dashboard → Shows learning path
 4. Click Lesson → Complete questions
@@ -454,7 +454,7 @@ Lesson 5: Adjusting Your Budget 🔒
 ### Week 1: Foundation
 
 - [x] Set up Next.js project
-- [x] Implement Clerk authentication
+- [x] Implement NextAuth.js authentication
 - [x] Build landing page
 - [x] Create onboarding flow
 - [x] Set up basic routing
