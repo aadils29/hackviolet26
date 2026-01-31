@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,32 +19,18 @@ export const metadata: Metadata = {
     "Learn personal finance through fun, bite-sized lessons. Build confidence with money, one lesson at a time.",
 };
 
-// Check if Clerk keys are configured
-const isClerkConfigured =
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes(
-    "your_publishable_key",
-  );
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const body = (
-    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      {children}
-    </body>
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
-
-  // Only wrap with ClerkProvider if keys are configured
-  if (isClerkConfigured) {
-    return (
-      <ClerkProvider>
-        <html lang="en">{body}</html>
-      </ClerkProvider>
-    );
-  }
-
-  return <html lang="en">{body}</html>;
 }

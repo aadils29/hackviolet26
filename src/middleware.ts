@@ -1,36 +1,41 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-// Check if Clerk is configured
-const isClerkConfigured =
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes(
-    "your_publishable_key",
-  );
+import { getToken } from "next-auth/jwt";
 
 // Define public routes that don't require authentication
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/onboarding(.*)",
-  "/dashboard(.*)",
-  "/lesson(.*)",
-]);
+const publicRoutes = ["/", "/sign-in", "/sign-up", "/api/auth"];
 
-// Bypass middleware if Clerk is not configured
-function bypassMiddleware(request: NextRequest) {
-  return NextResponse.next();
+// Check if the path matches a public route
+function isPublicRoute(pathname: string): boolean {
+  return publicRoutes.some((route) => {
+    if (route === "/") return pathname === "/";
+    return pathname.startsWith(route);
+  });
 }
 
-export default isClerkConfigured
-  ? clerkMiddleware(async (auth, request) => {
-      if (!isPublicRoute(request)) {
-        await auth.protect();
-      }
-    })
-  : bypassMiddleware;
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Allow public routes
+  if (isPublicRoute(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Check for NextAuth session token
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  // If no token and trying to access protected route, redirect to sign-in
+  if (!token) {
+    const signInUrl = new URL("/sign-in", request.url);
+    signInUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
