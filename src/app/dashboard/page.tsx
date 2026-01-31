@@ -101,9 +101,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">💰</span>
-                <span className="font-bold text-xl text-primary">
-                  FinEmpowerHer
-                </span>
+                <span className="font-bold text-xl text-primary">FinFemme</span>
               </div>
               <div className="flex items-center gap-3">
                 <StreakBadge streak={userProgress.currentStreak} />
@@ -128,49 +126,57 @@ export default function DashboardPage() {
             <CardContent className="p-4">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-primary">{userProgress.currentXp}</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {userProgress.currentXp}
+                  </p>
                   <p className="text-xs text-muted-foreground">Total XP</p>
                 </div>
-              <div>
-                <p className="text-2xl font-bold text-orange-500">{userProgress.currentStreak}</p>
-                <p className="text-xs text-muted-foreground">Day Streak</p>
+                <div>
+                  <p className="text-2xl font-bold text-orange-500">
+                    {userProgress.currentStreak}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Day Streak</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-success">
+                    {completedLessonIds.length}/{totalLessons}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Lessons</p>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-success">{completedLessonIds.length}/{totalLessons}</p>
-                <p className="text-xs text-muted-foreground">Lessons</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Out of Hearts Warning */}
-        {userProgress.heartsRemaining === 0 && (
-          <Card className="mb-6 border-destructive bg-destructive/5">
-            <CardContent className="p-6 text-center">
-              <div className="text-4xl mb-2">💔</div>
-              <h2 className="text-xl font-bold text-destructive mb-2">
-                Out of Hearts!
-              </h2>
-              <p className="text-muted-foreground">
-                Your hearts will refill tomorrow. Come back then to continue
-                learning!
-              </p>
             </CardContent>
           </Card>
-        )}
 
-        {/* Course Title */}
-        <div className="text-center mb-4">
-          <h2 className="text-2xl font-bold">{budgetingCourse.title}</h2>
-          <p className="text-muted-foreground">{budgetingCourse.description}</p>
-        </div>
+          {/* Out of Hearts Warning */}
+          {userProgress.heartsRemaining === 0 && (
+            <Card className="mb-6 border-destructive bg-destructive/5">
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💔</div>
+                <h2 className="text-xl font-bold text-destructive mb-2">
+                  Out of Hearts!
+                </h2>
+                <p className="text-muted-foreground">
+                  Your hearts will refill tomorrow. Come back then to continue
+                  learning!
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Learning Path */}
-        <LearningPath
-          lessons={budgetingCourse.lessons}
-          completedLessonIds={completedLessonIds}
-          currentLessonIndex={currentLessonIndex}
-        />
+          {/* Course Title */}
+          <div className="text-center mb-4">
+            <h2 className="text-2xl font-bold">{budgetingCourse.title}</h2>
+            <p className="text-muted-foreground">
+              {budgetingCourse.description}
+            </p>
+          </div>
+
+          {/* Learning Path */}
+          <LearningPath
+            lessons={budgetingCourse.lessons}
+            completedLessonIds={completedLessonIds}
+            currentLessonIndex={currentLessonIndex}
+          />
         </main>
       </div>
     </div>

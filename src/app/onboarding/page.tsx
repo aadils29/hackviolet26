@@ -88,7 +88,7 @@ export default function OnboardingPage() {
             >
               <div className="text-8xl mb-6">💰</div>
               <h1 className="text-3xl font-bold text-foreground mb-4">
-                Welcome to FinEmpowerHer!
+                Welcome to FinFemme!
               </h1>
               <p className="text-muted-foreground mb-8 text-lg">
                 Learn personal finance through fun, bite-sized lessons. Build

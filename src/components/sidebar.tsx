@@ -35,7 +35,7 @@ export function Sidebar() {
         <div className="p-6 border-b">
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="text-2xl">💰</span>
-            <span className="font-bold text-xl text-primary">FinEmpowerHer</span>
+            <span className="font-bold text-xl text-primary">FinFemme</span>
           </Link>
         </div>
 

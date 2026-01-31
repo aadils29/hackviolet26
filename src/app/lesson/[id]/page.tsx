@@ -133,7 +133,7 @@ export default function LessonPage() {
   const completeLessonHandler = () => {
     const totalXp = xpEarned + 50; // Bonus XP for completing
     const accuracy = Math.round(
-      (correctAnswers / lesson.questions.length) * 100
+      (correctAnswers / lesson.questions.length) * 100,
     );
 
     // Update user progress
@@ -246,7 +246,7 @@ export default function LessonPage() {
                 <Card
                   key={index}
                   className={`cursor-pointer transition-all ${getAnswerStyle(
-                    index
+                    index,
                   )}`}
                   onClick={() => handleSelectAnswer(index)}
                 >
@@ -265,11 +265,9 @@ export default function LessonPage() {
                       index === currentQuestion.correctAnswer && (
                         <span className="text-success text-xl">✓</span>
                       )}
-                    {showFeedback &&
-                      index === selectedAnswer &&
-                      !isCorrect && (
-                        <span className="text-destructive text-xl">✗</span>
-                      )}
+                    {showFeedback && index === selectedAnswer && !isCorrect && (
+                      <span className="text-destructive text-xl">✗</span>
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -297,9 +295,7 @@ export default function LessonPage() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">
-                        {isCorrect ? "✓" : "✗"}
-                      </span>
+                      <span className="text-2xl">{isCorrect ? "✓" : "✗"}</span>
                       <div>
                         <h3
                           className={`font-semibold ${

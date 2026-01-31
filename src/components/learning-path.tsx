@@ -33,8 +33,8 @@ function LessonNode({ lesson, index, status, totalLessons }: LessonNodeProps) {
             status === "completed"
               ? "bg-gradient-to-br from-success to-emerald-600 text-white shadow-lg shadow-success/30"
               : status === "current"
-              ? "bg-gradient-to-br from-primary to-purple-700 text-white shadow-lg shadow-primary/40 ring-4 ring-primary/30 ring-offset-2"
-              : "bg-gray-200 text-gray-400"
+                ? "bg-gradient-to-br from-primary to-purple-700 text-white shadow-lg shadow-primary/40 ring-4 ring-primary/30 ring-offset-2"
+                : "bg-gray-200 text-gray-400"
           }
           ${status === "current" ? "scale-110" : ""}
           ${status !== "locked" ? "hover:scale-105" : ""}
@@ -119,7 +119,11 @@ export function LearningPath({
         <defs>
           <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgb(139, 92, 246)" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="rgb(236, 72, 153)" stopOpacity="0.3" />
+            <stop
+              offset="100%"
+              stopColor="rgb(236, 72, 153)"
+              stopOpacity="0.3"
+            />
           </linearGradient>
         </defs>
         <line

@@ -135,10 +135,10 @@ export default function FriendsPage() {
                             index === 0
                               ? "bg-yellow-400 text-yellow-900"
                               : index === 1
-                              ? "bg-gray-300 text-gray-700"
-                              : index === 2
-                              ? "bg-amber-600 text-white"
-                              : "bg-gray-100 text-gray-600"
+                                ? "bg-gray-300 text-gray-700"
+                                : index === 2
+                                  ? "bg-amber-600 text-white"
+                                  : "bg-gray-100 text-gray-600"
                           }
                         `}
                       >

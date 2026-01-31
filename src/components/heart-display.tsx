@@ -13,9 +13,7 @@ function HeartIcon({ filled }: { filled: boolean }) {
       height="24"
       viewBox="0 0 24 24"
       className={`transition-all duration-300 ${
-        filled 
-          ? "text-rose-500 drop-shadow-sm" 
-          : "text-gray-300"
+        filled ? "text-rose-500 drop-shadow-sm" : "text-gray-300"
       }`}
     >
       <path
@@ -28,14 +26,20 @@ function HeartIcon({ filled }: { filled: boolean }) {
   );
 }
 
-export function HeartDisplay({ hearts, maxHearts = 5, showCount = true }: HeartDisplayProps) {
+export function HeartDisplay({
+  hearts,
+  maxHearts = 5,
+  showCount = true,
+}: HeartDisplayProps) {
   return (
     <div className="flex items-center gap-1 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100">
       <HeartIcon filled={hearts > 0} />
       {showCount && (
-        <span className={`font-semibold text-sm min-w-[1.25rem] text-center ${
-          hearts > 0 ? "text-rose-600" : "text-gray-400"
-        }`}>
+        <span
+          className={`font-semibold text-sm min-w-[1.25rem] text-center ${
+            hearts > 0 ? "text-rose-600" : "text-gray-400"
+          }`}
+        >
           {hearts}
         </span>
       )}
@@ -44,7 +48,10 @@ export function HeartDisplay({ hearts, maxHearts = 5, showCount = true }: HeartD
 }
 
 // Compact version for lesson header
-export function HeartDisplayCompact({ hearts, maxHearts = 5 }: HeartDisplayProps) {
+export function HeartDisplayCompact({
+  hearts,
+  maxHearts = 5,
+}: HeartDisplayProps) {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: maxHearts }).map((_, i) => (

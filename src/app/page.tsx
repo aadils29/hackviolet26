@@ -9,7 +9,7 @@ export default function LandingPage() {
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="text-2xl">💰</span>
-          <span className="font-bold text-xl text-primary">FinEmpowerHer</span>
+          <span className="font-bold text-xl text-primary">FinFemme</span>
         </div>
         <div className="flex gap-3">
           <Link href="/sign-in">
@@ -86,7 +86,7 @@ export default function LandingPage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <span>💰</span>
-            <span>FinEmpowerHer © 2026</span>
+            <span>FinFemme © 2026</span>
           </div>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-primary">
