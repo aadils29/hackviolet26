@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Lock, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { Lesson } from "@/data/lessons";
 
@@ -44,7 +45,7 @@ function LessonNode({ lesson, index, status, totalLessons }: LessonNodeProps) {
         {status === "completed" ? (
           <span className="text-3xl">✓</span>
         ) : status === "locked" ? (
-          <span className="text-2xl">🔒</span>
+          <Lock className="w-8 h-8" />
         ) : (
           <span className="text-2xl font-bold">{index + 1}</span>
         )}
@@ -189,7 +190,7 @@ export function LearningPath({
             }
           `}
         >
-          <span className="text-4xl">🏆</span>
+          <Trophy className="w-10 h-10" />
         </motion.div>
         <p
           className={`text-sm font-medium ${

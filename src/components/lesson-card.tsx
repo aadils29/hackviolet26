@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lesson } from "@/data/lessons";
+import { Lock } from "lucide-react";
 
 interface LessonCardProps {
   lesson: Lesson;
@@ -24,16 +25,16 @@ export function LessonCard({
     locked: "border-gray-200 bg-gray-50 opacity-60",
   };
 
-  const statusIcons = {
-    completed: "✓",
-    current: "→",
-    locked: "🔒",
-  };
-
   const statusColors = {
     completed: "text-success",
     current: "text-primary",
     locked: "text-gray-400",
+  };
+
+  const getStatusIcon = (status: "completed" | "current" | "locked") => {
+    if (status === "completed") return "✓";
+    if (status === "current") return "→";
+    return <Lock className="w-4 h-4" />;
   };
 
   return (
@@ -43,7 +44,7 @@ export function LessonCard({
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <span className={`font-bold ${statusColors[status]}`}>
-                {statusIcons[status]}
+                {getStatusIcon(status)}
               </span>
               <span className="text-sm text-muted-foreground">
                 Lesson {lessonNumber}

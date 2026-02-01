@@ -7,6 +7,7 @@ import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
+import { Trophy } from "lucide-react";
 
 interface Friend {
   id: string;
@@ -113,7 +114,7 @@ export default function FriendsPage() {
           {/* Weekly Leaderboard */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🏆</span>
+              <Trophy className="w-6 h-6 text-amber-500" />
               <h2 className="text-xl font-bold">Weekly Leaderboard</h2>
             </div>
 

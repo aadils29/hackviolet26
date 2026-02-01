@@ -6,12 +6,14 @@ import { Sidebar } from "@/components/sidebar";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { useEffect, useState } from "react";
+import { Trophy, BookOpen, Target, Zap, Calendar, Award } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 
 interface Quest {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   progress: number;
   target: number;
   xpReward: number;
@@ -23,7 +25,7 @@ const dailyQuests: Quest[] = [
     id: "complete-lesson",
     title: "Complete a Lesson",
     description: "Finish any lesson today",
-    icon: "📚",
+    icon: BookOpen,
     progress: 0,
     target: 1,
     xpReward: 20,
@@ -33,7 +35,7 @@ const dailyQuests: Quest[] = [
     id: "perfect-lesson",
     title: "Perfect Score",
     description: "Get 100% on a lesson",
-    icon: "🎯",
+    icon: Target,
     progress: 0,
     target: 1,
     xpReward: 50,
@@ -43,7 +45,7 @@ const dailyQuests: Quest[] = [
     id: "answer-questions",
     title: "Answer 10 Questions",
     description: "Answer any 10 questions",
-    icon: "❓",
+    icon: Zap,
     progress: 0,
     target: 10,
     xpReward: 30,
@@ -56,7 +58,7 @@ const weeklyQuests: Quest[] = [
     id: "weekly-streak",
     title: "7-Day Streak",
     description: "Learn for 7 days in a row",
-    icon: "🔥",
+    icon: Calendar,
     progress: 0,
     target: 7,
     xpReward: 100,
@@ -66,7 +68,7 @@ const weeklyQuests: Quest[] = [
     id: "complete-course",
     title: "Course Master",
     description: "Complete all lessons in a course",
-    icon: "🏆",
+    icon: Trophy,
     progress: 0,
     target: 5,
     xpReward: 200,
@@ -125,7 +127,7 @@ export default function QuestsPage() {
           {/* Daily Quests */}
           <section className="mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">📅</span>
+              <Zap className="w-6 h-6 text-amber-500" />
               <h2 className="text-xl font-bold">Daily Quests</h2>
               <span className="text-sm text-muted-foreground ml-auto">
                 Resets in 12h
@@ -142,7 +144,7 @@ export default function QuestsPage() {
           {/* Weekly Quests */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">📆</span>
+              <Calendar className="w-6 h-6 text-blue-500" />
               <h2 className="text-xl font-bold">Weekly Quests</h2>
               <span className="text-sm text-muted-foreground ml-auto">
                 Resets in 5d
@@ -163,6 +165,7 @@ export default function QuestsPage() {
 
 function QuestCard({ quest }: { quest: Quest }) {
   const progressPercent = (quest.progress / quest.target) * 100;
+  const IconComponent = quest.icon;
 
   return (
     <Card
@@ -174,11 +177,15 @@ function QuestCard({ quest }: { quest: Quest }) {
         <div className="flex items-start gap-4">
           <div
             className={`
-              w-12 h-12 rounded-xl flex items-center justify-center text-2xl
+              w-12 h-12 rounded-xl flex items-center justify-center
               ${quest.completed ? "bg-success/20" : "bg-primary/10"}
             `}
           >
-            {quest.completed ? "✅" : quest.icon}
+            {quest.completed ? (
+              <Award className="w-6 h-6 text-success" />
+            ) : (
+              <IconComponent className="w-6 h-6" />
+            )}
           </div>
 
           <div className="flex-1">
