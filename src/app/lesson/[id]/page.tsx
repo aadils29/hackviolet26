@@ -41,7 +41,23 @@ export default function LessonPage() {
   const lessonId = params.id as string;
 
   const [lesson, setLesson] = useState(getLessonById(lessonId));
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Queue-based question system: questions cycle back when answered incorrectly
+  const [questionQueue, setQuestionQueue] = useState<Question[]>(() =>
+    getLessonById(lessonId)?.questions
+      ? [...getLessonById(lessonId)!.questions]
+      : [],
+  );
+  // Track how many times each question has been attempted (by question id)
+  const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>(
+    {},
+  );
+  // Track which questions were answered correctly on first attempt (for accuracy)
+  const [firstAttemptCorrect, setFirstAttemptCorrect] = useState(0);
+  // Track unique questions completed (for progress bar)
+  const [uniqueQuestionsCompleted, setUniqueQuestionsCompleted] = useState(0);
+  // Track if current question was wrong (to push back to queue on continue)
+  const [currentQuestionWrong, setCurrentQuestionWrong] = useState(false);
+
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -113,9 +129,15 @@ export default function LessonPage() {
     );
   }
 
-  const currentQuestion: Question = lesson.questions[currentQuestionIndex];
-  const progressPercent =
-    ((currentQuestionIndex + 1) / lesson.questions.length) * 100;
+  // Current question is always the first in the queue
+  const currentQuestion: Question = questionQueue[0];
+  const totalQuestions = lesson.questions.length;
+  // Progress based on unique questions completed (not total attempts)
+  const progressPercent = (uniqueQuestionsCompleted / totalQuestions) * 100;
+  // Check if this is a retry attempt for the current question
+  const isRetryAttempt = currentQuestion
+    ? (attemptCounts[currentQuestion.id] || 0) > 0
+    : false;
 
   const handleSelectAnswer = (index: number) => {
     if (showFeedback) return;
@@ -123,16 +145,41 @@ export default function LessonPage() {
   };
 
   const handleCheckAnswer = () => {
-    if (selectedAnswer === null) return;
+    if (selectedAnswer === null || !currentQuestion) return;
 
     const correct = selectedAnswer === currentQuestion.correctAnswer;
+    const questionId = currentQuestion.id;
+    const currentAttempts = attemptCounts[questionId] || 0;
+    const isFirstAttempt = currentAttempts === 0;
+
     setIsCorrect(correct);
     setShowFeedback(true);
 
+    // Track attempt count for this question
+    setAttemptCounts((prev) => ({
+      ...prev,
+      [questionId]: currentAttempts + 1,
+    }));
+
     if (correct) {
       setCorrectAnswers((prev) => prev + 1);
-      setXpEarned((prev) => prev + 10);
+      setCurrentQuestionWrong(false);
+
+      // XP: Full 10 XP for first attempt, 5 XP (50%) for retries
+      const xpGained = isFirstAttempt ? 10 : 5;
+      setXpEarned((prev) => prev + xpGained);
+
+      // Track first attempt accuracy
+      if (isFirstAttempt) {
+        setFirstAttemptCorrect((prev) => prev + 1);
+      }
+
+      // Mark this unique question as completed
+      setUniqueQuestionsCompleted((prev) => prev + 1);
     } else {
+      // Mark question to be pushed back to queue on continue
+      setCurrentQuestionWrong(true);
+
       // Lose a heart
       const newHearts = userProgress.heartsRemaining - 1;
       const updatedProgress = {
@@ -166,18 +213,28 @@ export default function LessonPage() {
     setShowFeedback(false);
     setSelectedAnswer(null);
 
-    if (currentQuestionIndex < lesson.questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+    // Remove current question from front of queue
+    const remainingQuestions = questionQueue.slice(1);
+
+    if (currentQuestionWrong) {
+      // Push the incorrectly answered question to the back of the queue
+      remainingQuestions.push(currentQuestion);
+      setCurrentQuestionWrong(false);
+    }
+
+    if (remainingQuestions.length > 0) {
+      setQuestionQueue(remainingQuestions);
     } else {
-      // Lesson complete
+      // All questions answered correctly - lesson complete!
       completeLessonHandler();
     }
   };
 
   const completeLessonHandler = async () => {
     const totalXp = xpEarned + 50; // Bonus XP for completing
+    // Accuracy is based on first attempt correct answers only
     const accuracy = Math.round(
-      (correctAnswers / lesson.questions.length) * 100,
+      (firstAttemptCorrect / lesson.questions.length) * 100,
     );
 
     // Update user progress
@@ -282,7 +339,7 @@ export default function LessonPage() {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>
-                {currentQuestionIndex + 1}/{lesson.questions.length}
+                {uniqueQuestionsCompleted}/{lesson.questions.length}
               </span>
               <HeartDisplayCompact hearts={userProgress.heartsRemaining} />
             </div>
@@ -294,7 +351,11 @@ export default function LessonPage() {
       <main className="container mx-auto px-4 py-8 max-w-xl">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentQuestionIndex}
+            key={
+              currentQuestion?.id +
+              "-" +
+              (attemptCounts[currentQuestion?.id] || 0)
+            }
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -383,13 +444,23 @@ export default function LessonPage() {
                         </p>
                         {isCorrect && (
                           <p className="text-sm text-success font-medium mt-2">
-                            +10 XP
+                            +{isRetryAttempt ? "5" : "10"} XP{" "}
+                            {isRetryAttempt && (
+                              <span className="text-muted-foreground">
+                                (retry)
+                              </span>
+                            )}
                           </p>
                         )}
                         {!isCorrect && (
-                          <p className="text-sm text-destructive font-medium mt-2">
-                            -1 Heart ❤️→💔
-                          </p>
+                          <div className="space-y-1">
+                            <p className="text-sm text-destructive font-medium mt-2">
+                              -1 Heart ❤️→💔
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              🔄 This question will come back later
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -442,10 +513,19 @@ export default function LessonPage() {
                   You earned {xpEarned} XP
                 </p>
                 <p>
-                  Accuracy: {correctAnswers}/{lesson.questions.length} (
-                  {Math.round((correctAnswers / lesson.questions.length) * 100)}
+                  First-try accuracy: {firstAttemptCorrect}/
+                  {lesson.questions.length} (
+                  {Math.round(
+                    (firstAttemptCorrect / lesson.questions.length) * 100,
+                  )}
                   %)
                 </p>
+                {correctAnswers > firstAttemptCorrect && (
+                  <p className="text-sm text-muted-foreground">
+                    {correctAnswers - firstAttemptCorrect} question(s) required
+                    retries
+                  </p>
+                )}
                 <p className="flex items-center justify-center gap-2 text-orange-600">
                   <span>🔥</span> Streak maintained!
                 </p>
