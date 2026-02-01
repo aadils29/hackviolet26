@@ -156,10 +156,10 @@ export default function BudgetingPage() {
             {/* Welcome Section */}
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold text-gray-900">
-                Welcome back! 👋
+                Budgeting Basics 💰
               </h1>
               <p className="text-xl text-muted-foreground">
-                Continue your journey to financial confidence
+                Learn to manage your money effectively
               </p>
               <Button onClick={() => setShowPassage(!showPassage)}>
                 {showPassage ? "Hide" : "Read"} Course Overview
