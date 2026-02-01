@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { Trophy, BookOpen, Target, Zap, Calendar, Award } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 
@@ -77,17 +78,39 @@ const weeklyQuests: Quest[] = [
 ];
 
 export default function QuestsPage() {
+  const { data: session, status } = useSession();
   const [userProgress, setUserProgress] = useState<{
     heartsRemaining: number;
     currentStreak: number;
   } | null>(null);
 
   useEffect(() => {
-    const progress = localStorage.getItem("userProgress");
-    if (progress) {
-      setUserProgress(JSON.parse(progress));
-    }
-  }, []);
+    const loadProgress = async () => {
+      if (status === "loading") return;
+
+      if (session?.user) {
+        try {
+          const res = await fetch("/api/progress");
+          if (res.ok) {
+            const data = await res.json();
+            setUserProgress({
+              heartsRemaining: data.heartsRemaining,
+              currentStreak: data.currentStreak,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching progress:", error);
+        }
+      } else {
+        const progress = localStorage.getItem("userProgress");
+        if (progress) {
+          setUserProgress(JSON.parse(progress));
+        }
+      }
+    };
+
+    loadProgress();
+  }, [session, status]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
@@ -28,44 +29,80 @@ interface LessonProgress {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    const prefs = localStorage.getItem("userPreferences");
-    if (!prefs) {
-      router.push("/onboarding");
-      return;
-    }
+    const loadData = async () => {
+      // Check if user has completed onboarding
+      const prefs = localStorage.getItem("userPreferences");
+      if (!prefs) {
+        router.push("/onboarding");
+        return;
+      }
 
-    // Load user progress
-    const progress = localStorage.getItem("userProgress");
-    if (progress) {
-      setUserProgress(JSON.parse(progress));
-    } else {
-      // Initialize default progress
-      const defaultProgress: UserProgress = {
-        currentXp: 0,
-        currentLevel: 1,
-        currentStreak: 0,
-        heartsRemaining: 5,
-        lastHeartLoss: null,
-        lastCompletedLesson: null,
-      };
-      localStorage.setItem("userProgress", JSON.stringify(defaultProgress));
-      setUserProgress(defaultProgress);
-    }
+      if (status === "loading") return;
 
-    // Load lesson progress
-    const lessons = localStorage.getItem("lessonProgress");
-    if (lessons) {
-      setLessonProgress(JSON.parse(lessons));
-    }
+      if (session?.user) {
+        // Fetch from API for authenticated users
+        try {
+          const [progressRes, lessonsRes] = await Promise.all([
+            fetch("/api/progress"),
+            fetch("/api/progress/lessons"),
+          ]);
 
-    setIsLoading(false);
-  }, [router]);
+          if (progressRes.ok) {
+            const progressData = await progressRes.json();
+            setUserProgress({
+              currentXp: progressData.currentXp,
+              currentLevel: progressData.currentLevel,
+              currentStreak: progressData.currentStreak,
+              heartsRemaining: progressData.heartsRemaining,
+              lastHeartLoss: progressData.lastHeartLoss,
+              lastCompletedLesson: progressData.lastCompletedLesson,
+            });
+          }
+
+          if (lessonsRes.ok) {
+            const lessonsData = await lessonsRes.json();
+            setLessonProgress(lessonsData);
+          }
+        } catch (error) {
+          console.error("Error fetching progress:", error);
+        }
+      } else {
+        // Fallback to localStorage for unauthenticated users
+        const progress = localStorage.getItem("userProgress");
+        if (progress) {
+          setUserProgress(JSON.parse(progress));
+        } else {
+          // Initialize default progress
+          const defaultProgress: UserProgress = {
+            currentXp: 0,
+            currentLevel: 1,
+            currentStreak: 0,
+            heartsRemaining: 5,
+            lastHeartLoss: null,
+            lastCompletedLesson: null,
+          };
+          localStorage.setItem("userProgress", JSON.stringify(defaultProgress));
+          setUserProgress(defaultProgress);
+        }
+
+        // Load lesson progress from localStorage
+        const lessons = localStorage.getItem("lessonProgress");
+        if (lessons) {
+          setLessonProgress(JSON.parse(lessons));
+        }
+      }
+
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, [router, session, status]);
 
   if (isLoading || !userProgress) {
     return (

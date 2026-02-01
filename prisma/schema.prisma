@@ -11,16 +11,47 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id             String           @id @default(cuid())
+  name           String?
+  email          String           @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String?
+  accounts       Account[]
+  sessions       Session[]
+  userProgress   UserProgress?
+  lessonProgress LessonProgress[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model UserProgress {
+  id                  String    @id @default(cuid())
+  userId              String    @unique
+  currentXp           Int       @default(0)
+  currentLevel        Int       @default(1)
+  currentStreak       Int       @default(0)
+  heartsRemaining     Int       @default(5)
+  lastHeartLoss       DateTime?
+  lastCompletedLesson DateTime?
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  accuracy    Float     @default(0)
+  xpEarned    Int       @default(0)
+  completedAt DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, lessonId])
 }
 
 model Account {

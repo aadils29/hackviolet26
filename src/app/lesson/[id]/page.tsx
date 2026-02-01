@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,6 +37,7 @@ interface LessonProgress {
 export default function LessonPage() {
   const params = useParams();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const lessonId = params.id as string;
 
   const [lesson, setLesson] = useState(getLessonById(lessonId));
@@ -51,17 +53,46 @@ export default function LessonPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load user progress
-    const progress = localStorage.getItem("userProgress");
-    if (progress) {
-      const parsed = JSON.parse(progress);
-      setUserProgress(parsed);
-      if (parsed.heartsRemaining === 0) {
-        setShowOutOfHearts(true);
+    const loadProgress = async () => {
+      if (status === "loading") return;
+
+      if (session?.user) {
+        // Fetch progress from API for authenticated users
+        try {
+          const res = await fetch("/api/progress");
+          if (res.ok) {
+            const data = await res.json();
+            setUserProgress({
+              currentXp: data.currentXp,
+              currentLevel: data.currentLevel,
+              currentStreak: data.currentStreak,
+              heartsRemaining: data.heartsRemaining,
+              lastHeartLoss: data.lastHeartLoss,
+              lastCompletedLesson: data.lastCompletedLesson,
+            });
+            if (data.heartsRemaining === 0) {
+              setShowOutOfHearts(true);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching progress:", error);
+        }
+      } else {
+        // Fallback to localStorage for unauthenticated users
+        const progress = localStorage.getItem("userProgress");
+        if (progress) {
+          const parsed = JSON.parse(progress);
+          setUserProgress(parsed);
+          if (parsed.heartsRemaining === 0) {
+            setShowOutOfHearts(true);
+          }
+        }
       }
-    }
-    setIsLoading(false);
-  }, []);
+      setIsLoading(false);
+    };
+
+    loadProgress();
+  }, [session, status]);
 
   if (!lesson) {
     return (
@@ -110,7 +141,20 @@ export default function LessonPage() {
         lastHeartLoss: new Date().toISOString(),
       };
       setUserProgress(updatedProgress);
-      localStorage.setItem("userProgress", JSON.stringify(updatedProgress));
+      
+      // Save to API or localStorage
+      if (session?.user) {
+        fetch("/api/progress", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            heartsRemaining: newHearts,
+            lastHeartLoss: new Date().toISOString(),
+          }),
+        });
+      } else {
+        localStorage.setItem("userProgress", JSON.stringify(updatedProgress));
+      }
 
       if (newHearts === 0) {
         setShowOutOfHearts(true);
@@ -130,7 +174,7 @@ export default function LessonPage() {
     }
   };
 
-  const completeLessonHandler = () => {
+  const completeLessonHandler = async () => {
     const totalXp = xpEarned + 50; // Bonus XP for completing
     const accuracy = Math.round(
       (correctAnswers / lesson.questions.length) * 100,
@@ -146,27 +190,57 @@ export default function LessonPage() {
       currentStreak: userProgress.currentStreak + 1,
       lastCompletedLesson: new Date().toISOString(),
     };
-    localStorage.setItem("userProgress", JSON.stringify(updatedUserProgress));
 
-    // Save lesson progress
-    const existingLessons = localStorage.getItem("lessonProgress");
-    const lessonProgressArray: LessonProgress[] = existingLessons
-      ? JSON.parse(existingLessons)
-      : [];
+    if (session?.user) {
+      // Save to API for authenticated users
+      try {
+        await fetch("/api/progress", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            currentXp: newXp,
+            currentLevel: newLevel,
+            currentStreak: userProgress.currentStreak + 1,
+            lastCompletedLesson: new Date().toISOString(),
+          }),
+        });
 
-    const newLessonProgress: LessonProgress = {
-      lessonId: lesson.id,
-      completed: true,
-      accuracy,
-      xpEarned: totalXp,
-      completedAt: new Date().toISOString(),
-    };
+        await fetch("/api/progress/lessons", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            lessonId: lesson.id,
+            completed: true,
+            accuracy,
+            xpEarned: totalXp,
+          }),
+        });
+      } catch (error) {
+        console.error("Error saving progress:", error);
+      }
+    } else {
+      // Fallback to localStorage for unauthenticated users
+      localStorage.setItem("userProgress", JSON.stringify(updatedUserProgress));
 
-    const updatedLessons = [
-      ...lessonProgressArray.filter((lp) => lp.lessonId !== lesson.id),
-      newLessonProgress,
-    ];
-    localStorage.setItem("lessonProgress", JSON.stringify(updatedLessons));
+      const existingLessons = localStorage.getItem("lessonProgress");
+      const lessonProgressArray: LessonProgress[] = existingLessons
+        ? JSON.parse(existingLessons)
+        : [];
+
+      const newLessonProgress: LessonProgress = {
+        lessonId: lesson.id,
+        completed: true,
+        accuracy,
+        xpEarned: totalXp,
+        completedAt: new Date().toISOString(),
+      };
+
+      const updatedLessons = [
+        ...lessonProgressArray.filter((lp) => lp.lessonId !== lesson.id),
+        newLessonProgress,
+      ];
+      localStorage.setItem("lessonProgress", JSON.stringify(updatedLessons));
+    }
 
     setXpEarned(totalXp);
     setShowLessonComplete(true);
