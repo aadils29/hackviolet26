@@ -65,7 +65,10 @@ export function Sidebar() {
         const res = await fetch("/api/progress");
         if (res.ok) {
           const data = await res.json();
-          setProgress({ currentLevel: data.currentLevel, currentXp: data.currentXp });
+          setProgress({
+            currentLevel: data.currentLevel,
+            currentXp: data.currentXp,
+          });
         }
       } catch (error) {
         console.error("Failed to fetch progress:", error);
@@ -128,7 +131,9 @@ export function Sidebar() {
               <User className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-medium text-sm">{session?.user?.name || "Learner"}</p>
+              <p className="font-medium text-sm">
+                {session?.user?.name || "Learner"}
+              </p>
               <p className="text-xs text-muted-foreground">
                 Level {progress.currentLevel} ({xpInCurrentLevel}/{xpPerLevel})
               </p>

@@ -61,6 +61,8 @@ export default function LessonPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  // Track if the answer being shown in feedback was a retry (set at check time, not render time)
+  const [wasRetryAttempt, setWasRetryAttempt] = useState(false);
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [xpEarned, setXpEarned] = useState(0);
@@ -134,10 +136,6 @@ export default function LessonPage() {
   const totalQuestions = lesson.questions.length;
   // Progress based on unique questions completed (not total attempts)
   const progressPercent = (uniqueQuestionsCompleted / totalQuestions) * 100;
-  // Check if this is a retry attempt for the current question
-  const isRetryAttempt = currentQuestion
-    ? (attemptCounts[currentQuestion.id] || 0) > 0
-    : false;
 
   const handleSelectAnswer = (index: number) => {
     if (showFeedback) return;
@@ -154,6 +152,8 @@ export default function LessonPage() {
 
     setIsCorrect(correct);
     setShowFeedback(true);
+    // Store whether this was a retry at check time (before incrementing attemptCounts)
+    setWasRetryAttempt(!isFirstAttempt);
 
     // Track attempt count for this question
     setAttemptCounts((prev) => ({
@@ -480,8 +480,8 @@ export default function LessonPage() {
                         </p>
                         {isCorrect && (
                           <p className="text-sm text-success font-medium mt-2">
-                            +{isRetryAttempt ? "5" : "10"} XP{" "}
-                            {isRetryAttempt && (
+                            +{wasRetryAttempt ? "5" : "10"} XP{" "}
+                            {wasRetryAttempt && (
                               <span className="text-muted-foreground">
                                 (retry)
                               </span>
