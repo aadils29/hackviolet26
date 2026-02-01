@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
@@ -29,6 +30,7 @@ interface LessonProgress {
 
 export default function BudgetingPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [lessonProgress, setLessonProgress] = useState<LessonProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,39 +39,72 @@ export default function BudgetingPage() {
   const passageText = `A budget is a plan for how you spend your money each month. To create one, list your income and expenses, then track what you actually spend. Categories include needs like housing and food, and wants like entertainment. If you overspend, adjust by cutting non-essential expenses. Sticking to a budget helps you reach financial goals and avoid debt. Review it regularly and be flexible with changes in your life.`;
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    const prefs = localStorage.getItem("userPreferences");
-    if (!prefs) {
-      router.push("/onboarding");
-      return;
-    }
+    const loadData = async () => {
+      // Check if user has completed onboarding
+      const prefs = localStorage.getItem("userPreferences");
+      if (!prefs) {
+        router.push("/onboarding");
+        return;
+      }
 
-    // Load user progress
-    const progress = localStorage.getItem("userProgress");
-    if (progress) {
-      setUserProgress(JSON.parse(progress));
-    } else {
-      // Initialize default progress
-      const defaultProgress: UserProgress = {
-        currentXp: 0,
-        currentLevel: 1,
-        currentStreak: 0,
-        heartsRemaining: 5,
-        lastHeartLoss: null,
-        lastCompletedLesson: null,
-      };
-      setUserProgress(defaultProgress);
-      localStorage.setItem("userProgress", JSON.stringify(defaultProgress));
-    }
+      if (status === "loading") return;
 
-    // Load lesson progress
-    const lessonProg = localStorage.getItem("lessonProgress");
-    if (lessonProg) {
-      setLessonProgress(JSON.parse(lessonProg));
-    }
+      if (session?.user) {
+        // Fetch from API for authenticated users
+        try {
+          const [progressRes, lessonsRes] = await Promise.all([
+            fetch("/api/progress"),
+            fetch("/api/progress/lessons"),
+          ]);
 
-    setIsLoading(false);
-  }, [router]);
+          if (progressRes.ok) {
+            const progressData = await progressRes.json();
+            setUserProgress({
+              currentXp: progressData.currentXp,
+              currentLevel: progressData.currentLevel,
+              currentStreak: progressData.currentStreak,
+              heartsRemaining: progressData.heartsRemaining,
+              lastHeartLoss: progressData.lastHeartLoss,
+              lastCompletedLesson: progressData.lastCompletedLesson,
+            });
+          }
+
+          if (lessonsRes.ok) {
+            const lessonsData = await lessonsRes.json();
+            setLessonProgress(lessonsData);
+          }
+        } catch (error) {
+          console.error("Error fetching progress:", error);
+        }
+      } else {
+        // Fallback to localStorage for unauthenticated users
+        const progress = localStorage.getItem("userProgress");
+        if (progress) {
+          setUserProgress(JSON.parse(progress));
+        } else {
+          const defaultProgress: UserProgress = {
+            currentXp: 0,
+            currentLevel: 1,
+            currentStreak: 0,
+            heartsRemaining: 5,
+            lastHeartLoss: null,
+            lastCompletedLesson: null,
+          };
+          setUserProgress(defaultProgress);
+          localStorage.setItem("userProgress", JSON.stringify(defaultProgress));
+        }
+
+        const lessonProg = localStorage.getItem("lessonProgress");
+        if (lessonProg) {
+          setLessonProgress(JSON.parse(lessonProg));
+        }
+      }
+
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, [router, session, status]);
 
   if (isLoading) {
     return (

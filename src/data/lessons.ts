@@ -1719,16 +1719,32 @@ export const budgetingCourse: Course = {
   ],
 };
 
+// Helper to create a course-specific copy of a lesson with a unique ID
+function createCourseLesson(
+  lesson: Lesson,
+  coursePrefix: string,
+  lessonNumber: number,
+): Lesson {
+  return {
+    ...lesson,
+    id: `${coursePrefix}-lesson-${lessonNumber}`,
+    questions: lesson.questions.map((q, idx) => ({
+      ...q,
+      id: `${coursePrefix}-q${lessonNumber}-${idx + 1}`,
+    })),
+  };
+}
+
 export const retirementCourse: Course = {
   id: "retirement-savings",
   title: "Retirement Savings",
   description: "Plan for your financial future",
   lessons: [
-    budgetingCourse.lessons[5], // 401(k)
-    budgetingCourse.lessons[9], // IRA Accounts
-    budgetingCourse.lessons[10], // Social Security Benefits
-    budgetingCourse.lessons[11], // Pension Plans
-    budgetingCourse.lessons[12], // Long-term Investment Strategies
+    createCourseLesson(budgetingCourse.lessons[5], "retirement", 1), // 401(k)
+    createCourseLesson(budgetingCourse.lessons[9], "retirement", 2), // IRA Accounts
+    createCourseLesson(budgetingCourse.lessons[10], "retirement", 3), // Social Security Benefits
+    createCourseLesson(budgetingCourse.lessons[11], "retirement", 4), // Pension Plans
+    createCourseLesson(budgetingCourse.lessons[12], "retirement", 5), // Long-term Investment Strategies
   ],
 };
 
@@ -1737,11 +1753,11 @@ export const investingCourse: Course = {
   title: "Investing Basics",
   description: "Learn the fundamentals of investing",
   lessons: [
-    budgetingCourse.lessons[6], // Investing in Stocks
-    budgetingCourse.lessons[13], // Bonds and Fixed Income
-    budgetingCourse.lessons[14], // Mutual Funds and ETFs
-    budgetingCourse.lessons[15], // Diversification Strategies
-    budgetingCourse.lessons[16], // Risk Management
+    createCourseLesson(budgetingCourse.lessons[6], "investing", 1), // Investing in Stocks
+    createCourseLesson(budgetingCourse.lessons[13], "investing", 2), // Bonds and Fixed Income
+    createCourseLesson(budgetingCourse.lessons[14], "investing", 3), // Mutual Funds and ETFs
+    createCourseLesson(budgetingCourse.lessons[15], "investing", 4), // Diversification Strategies
+    createCourseLesson(budgetingCourse.lessons[16], "investing", 5), // Risk Management
   ],
 };
 
@@ -1750,11 +1766,11 @@ export const creditCourse: Course = {
   title: "Credit & Debit Cards",
   description: "Master the use of credit and debit cards",
   lessons: [
-    budgetingCourse.lessons[7], // Credit Cards vs Debit Cards
-    budgetingCourse.lessons[17], // Building Credit Score
-    budgetingCourse.lessons[18], // Credit Card Rewards
-    budgetingCourse.lessons[19], // Debt Management
-    budgetingCourse.lessons[20], // Card Security
+    createCourseLesson(budgetingCourse.lessons[7], "credit", 1), // Credit Cards vs Debit Cards
+    createCourseLesson(budgetingCourse.lessons[17], "credit", 2), // Building Credit Score
+    createCourseLesson(budgetingCourse.lessons[18], "credit", 3), // Credit Card Rewards
+    createCourseLesson(budgetingCourse.lessons[19], "credit", 4), // Debt Management
+    createCourseLesson(budgetingCourse.lessons[20], "credit", 5), // Card Security
   ],
 };
 
@@ -1763,27 +1779,48 @@ export const loansCourse: Course = {
   title: "Loans & Mortgages",
   description: "Understand different types of loans and borrowing",
   lessons: [
-    budgetingCourse.lessons[8], // Understanding Mortgages and Loans
-    budgetingCourse.lessons[21], // Home Equity Loans
-    budgetingCourse.lessons[22], // Personal Loans
-    budgetingCourse.lessons[23], // Student Loans
-    budgetingCourse.lessons[24], // Auto Loans
+    createCourseLesson(budgetingCourse.lessons[8], "loans", 1), // Understanding Mortgages and Loans
+    createCourseLesson(budgetingCourse.lessons[21], "loans", 2), // Home Equity Loans
+    createCourseLesson(budgetingCourse.lessons[22], "loans", 3), // Personal Loans
+    createCourseLesson(budgetingCourse.lessons[23], "loans", 4), // Student Loans
+    createCourseLesson(budgetingCourse.lessons[24], "loans", 5), // Auto Loans
   ],
 };
 
+// All courses for searching
+export const allCourses: Course[] = [
+  budgetingCourse,
+  retirementCourse,
+  investingCourse,
+  creditCourse,
+  loansCourse,
+];
+
 export function getLessonById(lessonId: string): Lesson | undefined {
-  return budgetingCourse.lessons.find((lesson) => lesson.id === lessonId);
+  for (const course of allCourses) {
+    const lesson = course.lessons.find((l) => l.id === lessonId);
+    if (lesson) return lesson;
+  }
+  return undefined;
+}
+
+export function getCourseByLessonId(lessonId: string): Course | undefined {
+  for (const course of allCourses) {
+    const lesson = course.lessons.find((l) => l.id === lessonId);
+    if (lesson) return course;
+  }
+  return undefined;
 }
 
 export function getNextLesson(currentLessonId: string): Lesson | undefined {
-  const currentIndex = budgetingCourse.lessons.findIndex(
+  const course = getCourseByLessonId(currentLessonId);
+  if (!course) return undefined;
+
+  const currentIndex = course.lessons.findIndex(
     (lesson) => lesson.id === currentLessonId,
   );
-  if (
-    currentIndex === -1 ||
-    currentIndex === budgetingCourse.lessons.length - 1
-  ) {
+  if (currentIndex === -1 || currentIndex === course.lessons.length - 1) {
     return undefined;
   }
-  return budgetingCourse.lessons[currentIndex + 1];
+  return course.lessons[currentIndex + 1];
 }
