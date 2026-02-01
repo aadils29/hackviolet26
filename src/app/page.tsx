@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Target, Gamepad2, Sparkles } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -47,7 +48,9 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-3 gap-6 mt-20 max-w-4xl mx-auto">
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
             <CardContent className="pt-6 text-center">
-              <div className="text-4xl mb-4">🎯</div>
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Target className="w-6 h-6 text-primary" />
+              </div>
               <h3 className="font-semibold text-lg mb-2">Simple</h3>
               <p className="text-muted-foreground">
                 Bite-sized lessons that fit your busy schedule. Learn in just 5
@@ -58,7 +61,9 @@ export default function LandingPage() {
 
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
             <CardContent className="pt-6 text-center">
-              <div className="text-4xl mb-4">🎮</div>
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Gamepad2 className="w-6 h-6 text-primary" />
+              </div>
               <h3 className="font-semibold text-lg mb-2">Fun</h3>
               <p className="text-muted-foreground">
                 Gamified learning with XP, streaks, and achievements to keep you
@@ -69,7 +74,9 @@ export default function LandingPage() {
 
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
             <CardContent className="pt-6 text-center">
-              <div className="text-4xl mb-4">✨</div>
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
               <h3 className="font-semibold text-lg mb-2">Effective</h3>
               <p className="text-muted-foreground">
                 Research-backed curriculum designed to build real financial
