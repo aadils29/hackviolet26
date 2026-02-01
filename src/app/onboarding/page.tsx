@@ -6,13 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-const goals = [
-  { id: "budget", emoji: "📊", label: "Learn to budget" },
-  { id: "save", emoji: "💰", label: "Start saving" },
-  { id: "invest", emoji: "📈", label: "Understand investing" },
-  { id: "debt", emoji: "💳", label: "Manage debt" },
-];
-
 const timeCommitments = [
   { minutes: 5, label: "5 min/day", description: "Casual learner" },
   { minutes: 10, label: "10 min/day", description: "Regular practice" },
@@ -22,11 +15,10 @@ const timeCommitments = [
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
 
   const handleNext = () => {
-    if (step < 3) {
+    if (step < 2) {
       setStep(step + 1);
     }
   };
@@ -36,7 +28,6 @@ export default function OnboardingPage() {
     localStorage.setItem(
       "userPreferences",
       JSON.stringify({
-        goal: selectedGoal,
         dailyMinutes: selectedTime,
         onboardingCompleted: true,
       }),
@@ -61,7 +52,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-md">
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">
-          {[1, 2, 3].map((i) => (
+          {[1, 2].map((i) => (
             <div
               key={i}
               className={`h-2 w-2 rounded-full transition-colors ${
@@ -104,57 +95,8 @@ export default function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* Step 2: Goal Selection */}
+          {/* Step 2: Daily Commitment */}
           {step === 2 && (
-            <motion.div
-              key="goals"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="text-2xl font-bold text-foreground mb-2 text-center">
-                What&apos;s your main goal?
-              </h1>
-              <p className="text-muted-foreground mb-6 text-center">
-                We&apos;ll personalize your learning path
-              </p>
-
-              <div className="space-y-3 mb-8">
-                {goals.map((goal) => (
-                  <Card
-                    key={goal.id}
-                    className={`cursor-pointer transition-all hover:shadow-md ${
-                      selectedGoal === goal.id
-                        ? "ring-2 ring-primary bg-primary/5"
-                        : "hover:bg-gray-50"
-                    }`}
-                    onClick={() => setSelectedGoal(goal.id)}
-                  >
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <span className="text-3xl">{goal.emoji}</span>
-                      <span className="font-medium text-lg">{goal.label}</span>
-                      {selectedGoal === goal.id && (
-                        <span className="ml-auto text-primary">✓</span>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <Button
-                size="lg"
-                className="w-full py-6 text-lg"
-                onClick={handleNext}
-                disabled={!selectedGoal}
-              >
-                Continue →
-              </Button>
-            </motion.div>
-          )}
-
-          {/* Step 3: Daily Commitment */}
-          {step === 3 && (
             <motion.div
               key="time"
               initial={{ opacity: 0, x: 20 }}
