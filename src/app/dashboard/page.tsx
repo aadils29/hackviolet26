@@ -3,12 +3,31 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HeartDisplay } from "@/components/heart-display";
 import { StreakBadge } from "@/components/streak-badge";
-import { LearningPath } from "@/components/learning-path";
+import { CourseCard } from "@/components/course-card";
 import { Sidebar } from "@/components/sidebar";
-import { budgetingCourse } from "@/data/lessons";
+import { PlayCircle } from "lucide-react";
+import {
+  budgetingCourse,
+  retirementCourse,
+  investingCourse,
+  creditCourse,
+  loansCourse,
+  Course,
+} from "@/data/lessons";
+
+// All available courses with their routes
+const allCourses: { course: Course; route: string }[] = [
+  { course: budgetingCourse, route: "/budgeting" },
+  { course: retirementCourse, route: "/retirement" },
+  { course: investingCourse, route: "/investing" },
+  { course: creditCourse, route: "/credit" },
+  { course: loansCourse, route: "/loans" },
+];
 
 interface UserProgress {
   currentXp: number;
@@ -115,16 +134,62 @@ export default function DashboardPage() {
     );
   }
 
-  // Calculate current lesson
+  // Calculate progress for each course
   const completedLessonIds = lessonProgress
     .filter((lp) => lp.completed)
     .map((lp) => lp.lessonId);
 
-  const currentLessonIndex = completedLessonIds.length;
-  const totalLessons = budgetingCourse.lessons.length;
-  const courseProgress = (completedLessonIds.length / totalLessons) * 100;
+  // Calculate per-course progress
+  const getCourseProgress = (course: Course) => {
+    const courseLessonIds = course.lessons.map((l) => l.id);
+    const completed = courseLessonIds.filter((id) =>
+      completedLessonIds.includes(id),
+    ).length;
+    return { completed, total: course.lessons.length };
+  };
 
-  const allLessonsCompleted = currentLessonIndex >= totalLessons;
+  // Find the most recently active course (one with progress but not complete)
+  const getActiveCourse = () => {
+    for (const { course, route } of allCourses) {
+      const progress = getCourseProgress(course);
+      if (progress.completed > 0 && progress.completed < progress.total) {
+        // Find the next lesson in this course
+        const nextLessonIndex = course.lessons.findIndex(
+          (l) => !completedLessonIds.includes(l.id),
+        );
+        return {
+          course,
+          route,
+          nextLesson: course.lessons[nextLessonIndex],
+          lessonNumber: nextLessonIndex + 1,
+        };
+      }
+    }
+    // Default to first course if none in progress
+    const firstCourse = allCourses[0];
+    const progress = getCourseProgress(firstCourse.course);
+    if (progress.completed < progress.total) {
+      const nextLessonIndex = firstCourse.course.lessons.findIndex(
+        (l) => !completedLessonIds.includes(l.id),
+      );
+      return {
+        course: firstCourse.course,
+        route: firstCourse.route,
+        nextLesson: firstCourse.course.lessons[nextLessonIndex],
+        lessonNumber: nextLessonIndex + 1,
+      };
+    }
+    return null;
+  };
+
+  const activeCourse = getActiveCourse();
+
+  // Calculate total stats across all courses
+  const totalLessons = allCourses.reduce(
+    (sum, { course }) => sum + course.lessons.length,
+    0,
+  );
+  const totalCompletedLessons = completedLessonIds.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
@@ -152,10 +217,10 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-8 max-w-lg pb-24 md:pb-8">
+        <main className="container mx-auto px-4 py-8 max-w-2xl pb-24 md:pb-8">
           {/* Desktop Header */}
           <div className="hidden md:flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold">Learn</h1>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
             <div className="flex items-center gap-4">
               <StreakBadge streak={userProgress.currentStreak} />
               <HeartDisplay hearts={userProgress.heartsRemaining} />
@@ -180,9 +245,11 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-success">
-                    {completedLessonIds.length}/{totalLessons}
+                    {totalCompletedLessons}
                   </p>
-                  <p className="text-xs text-muted-foreground">Lessons</p>
+                  <p className="text-xs text-muted-foreground">
+                    Lessons Complete
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -204,20 +271,63 @@ export default function DashboardPage() {
             </Card>
           )}
 
-          {/* Course Title */}
-          <div className="text-center mb-4">
-            <h2 className="text-2xl font-bold">{budgetingCourse.title}</h2>
-            <p className="text-muted-foreground">
-              {budgetingCourse.description}
+          {/* Continue Learning Card */}
+          {activeCourse && userProgress.heartsRemaining > 0 && (
+            <Card className="mb-8 border-primary/30 bg-primary/5">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Continue Learning
+                    </p>
+                    <h3 className="font-semibold text-lg">
+                      {activeCourse.course.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Lesson {activeCourse.lessonNumber}:{" "}
+                      {activeCourse.nextLesson?.title}
+                    </p>
+                  </div>
+                  <Link
+                    href={
+                      activeCourse.nextLesson
+                        ? `/lesson/${activeCourse.nextLesson.id}`
+                        : activeCourse.route
+                    }
+                  >
+                    <Button className="gap-2">
+                      <PlayCircle className="w-4 h-4" />
+                      Continue
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* All Courses Section */}
+          <div className="mb-4">
+            <h2 className="text-xl font-bold mb-1">Your Courses</h2>
+            <p className="text-sm text-muted-foreground">
+              Master financial literacy one topic at a time
             </p>
           </div>
 
-          {/* Learning Path */}
-          <LearningPath
-            lessons={budgetingCourse.lessons}
-            completedLessonIds={completedLessonIds}
-            currentLessonIndex={currentLessonIndex}
-          />
+          <div className="space-y-4">
+            {allCourses.map(({ course, route }) => {
+              const progress = getCourseProgress(course);
+              return (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  completedLessons={progress.completed}
+                  totalLessons={progress.total}
+                  route={route}
+                  isActive={activeCourse?.course.id === course.id}
+                />
+              );
+            })}
+          </div>
         </main>
       </div>
     </div>
