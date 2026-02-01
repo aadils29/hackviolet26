@@ -244,23 +244,29 @@ export default function LessonPage() {
       ...userProgress,
       currentXp: newXp,
       currentLevel: newLevel,
-      currentStreak: userProgress.currentStreak + 1,
+      // Note: streak is calculated server-side based on lastCompletedLesson
       lastCompletedLesson: new Date().toISOString(),
     };
 
     if (session?.user) {
       // Save to API for authenticated users
+      // Streak is calculated server-side based on lastCompletedLesson date
       try {
-        await fetch("/api/progress", {
+        const response = await fetch("/api/progress", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             currentXp: newXp,
             currentLevel: newLevel,
-            currentStreak: userProgress.currentStreak + 1,
             lastCompletedLesson: new Date().toISOString(),
           }),
         });
+
+        // Update local state with server-calculated streak
+        if (response.ok) {
+          const serverProgress = await response.json();
+          updatedUserProgress.currentStreak = serverProgress.currentStreak;
+        }
 
         await fetch("/api/progress/lessons", {
           method: "POST",
@@ -277,6 +283,36 @@ export default function LessonPage() {
       }
     } else {
       // Fallback to localStorage for unauthenticated users
+      // Calculate streak client-side for localStorage
+      const calculateLocalStreak = () => {
+        const lastCompletion = userProgress.lastCompletedLesson
+          ? new Date(userProgress.lastCompletedLesson)
+          : null;
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+
+        if (!lastCompletion) return 1;
+
+        const lastCompletionDay = new Date(
+          lastCompletion.getFullYear(),
+          lastCompletion.getMonth(),
+          lastCompletion.getDate(),
+        );
+        const diffDays = Math.floor(
+          (today.getTime() - lastCompletionDay.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
+
+        if (diffDays === 0) return userProgress.currentStreak;
+        if (diffDays === 1) return userProgress.currentStreak + 1;
+        return 1;
+      };
+
+      updatedUserProgress.currentStreak = calculateLocalStreak();
       localStorage.setItem("userProgress", JSON.stringify(updatedUserProgress));
 
       const existingLessons = localStorage.getItem("lessonProgress");
