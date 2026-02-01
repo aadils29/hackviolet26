@@ -3,49 +3,53 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import {
+  Wallet,
+  Landmark,
+  TrendingUp,
+  CreditCard,
+  Home,
+  Star,
+  Users,
+  LogOut,
+  User,
+} from "lucide-react";
 
 const navItems = [
   {
     href: "/budgeting",
     label: "Budgeting",
-    icon: "💰",
-    activeIcon: "💵",
+    icon: Wallet,
   },
   {
     href: "/retirement",
     label: "Retirement",
-    icon: "🏦",
-    activeIcon: "💼",
+    icon: Landmark,
   },
   {
     href: "/investing",
     label: "Investing",
-    icon: "📈",
-    activeIcon: "📊",
+    icon: TrendingUp,
   },
   {
     href: "/credit",
     label: "Credit",
-    icon: "💳",
-    activeIcon: "💳",
+    icon: CreditCard,
   },
   {
     href: "/loans",
     label: "Loans",
-    icon: "🏠",
-    activeIcon: "🏡",
+    icon: Home,
   },
   {
     href: "/quests",
     label: "Quests",
-    icon: "⭐",
-    activeIcon: "🌟",
+    icon: Star,
   },
   {
     href: "/friends",
     label: "Friends",
-    icon: "👥",
-    activeIcon: "👯",
+    icon: Users,
   },
 ];
 
@@ -72,6 +76,7 @@ export function Sidebar() {
           <ul className="space-y-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
+              const IconComponent = item.icon;
               return (
                 <li key={item.href}>
                   <Link
@@ -85,9 +90,7 @@ export function Sidebar() {
                       }
                     `}
                   >
-                    <span className="text-2xl">
-                      {isActive ? item.activeIcon : item.icon}
-                    </span>
+                    <IconComponent className="w-6 h-6" />
                     <span className="text-base">{item.label}</span>
                   </Link>
                 </li>
@@ -100,7 +103,7 @@ export function Sidebar() {
         <div className="p-4 border-t">
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-lg">👤</span>
+              <User className="w-5 h-5" />
             </div>
             <div>
               <p className="font-medium text-sm">Learner</p>
@@ -111,7 +114,7 @@ export function Sidebar() {
             onClick={() => signOut({ callbackUrl: "/" })}
             className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-all border-2 border-transparent hover:border-red-200"
           >
-            <span>🚪</span>
+            <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
           </button>
         </div>
@@ -122,6 +125,7 @@ export function Sidebar() {
         <ul className="flex justify-around py-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
+            const IconComponent = item.icon;
             return (
               <li key={item.href}>
                 <Link
@@ -131,9 +135,7 @@ export function Sidebar() {
                     ${isActive ? "text-primary" : "text-muted-foreground"}
                   `}
                 >
-                  <span className="text-2xl">
-                    {isActive ? item.activeIcon : item.icon}
-                  </span>
+                  <IconComponent className="w-6 h-6" />
                   <span className="text-xs font-medium">{item.label}</span>
                 </Link>
               </li>
@@ -144,7 +146,7 @@ export function Sidebar() {
               onClick={() => signOut({ callbackUrl: "/" })}
               className="flex flex-col items-center gap-1 px-6 py-2 rounded-lg transition-all text-muted-foreground hover:text-red-500"
             >
-              <span className="text-2xl">🚪</span>
+              <LogOut className="w-6 h-6" />
               <span className="text-xs font-medium">Sign Out</span>
             </button>
           </li>
