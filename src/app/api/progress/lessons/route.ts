@@ -22,7 +22,7 @@ export async function GET() {
     console.error("Error fetching lesson progress:", error);
     return NextResponse.json(
       { error: "Failed to fetch lesson progress" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     if (!lessonId) {
       return NextResponse.json(
         { error: "lessonId is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     console.error("Error saving lesson progress:", error);
     return NextResponse.json(
       { error: "Failed to save lesson progress" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

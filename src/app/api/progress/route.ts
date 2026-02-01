@@ -35,7 +35,7 @@ export async function GET() {
     console.error("Error fetching user progress:", error);
     return NextResponse.json(
       { error: "Failed to fetch progress" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -50,7 +50,14 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { currentXp, currentLevel, currentStreak, heartsRemaining, lastHeartLoss, lastCompletedLesson } = body;
+    const {
+      currentXp,
+      currentLevel,
+      currentStreak,
+      heartsRemaining,
+      lastHeartLoss,
+      lastCompletedLesson,
+    } = body;
 
     const userProgress = await prisma.userProgress.upsert({
       where: { userId: session.user.id },
@@ -59,8 +66,14 @@ export async function PUT(request: Request) {
         ...(currentLevel !== undefined && { currentLevel }),
         ...(currentStreak !== undefined && { currentStreak }),
         ...(heartsRemaining !== undefined && { heartsRemaining }),
-        ...(lastHeartLoss !== undefined && { lastHeartLoss: lastHeartLoss ? new Date(lastHeartLoss) : null }),
-        ...(lastCompletedLesson !== undefined && { lastCompletedLesson: lastCompletedLesson ? new Date(lastCompletedLesson) : null }),
+        ...(lastHeartLoss !== undefined && {
+          lastHeartLoss: lastHeartLoss ? new Date(lastHeartLoss) : null,
+        }),
+        ...(lastCompletedLesson !== undefined && {
+          lastCompletedLesson: lastCompletedLesson
+            ? new Date(lastCompletedLesson)
+            : null,
+        }),
       },
       create: {
         userId: session.user.id,
@@ -69,7 +82,9 @@ export async function PUT(request: Request) {
         currentStreak: currentStreak ?? 0,
         heartsRemaining: heartsRemaining ?? 5,
         lastHeartLoss: lastHeartLoss ? new Date(lastHeartLoss) : null,
-        lastCompletedLesson: lastCompletedLesson ? new Date(lastCompletedLesson) : null,
+        lastCompletedLesson: lastCompletedLesson
+          ? new Date(lastCompletedLesson)
+          : null,
       },
     });
 
@@ -78,7 +93,7 @@ export async function PUT(request: Request) {
     console.error("Error updating user progress:", error);
     return NextResponse.json(
       { error: "Failed to update progress" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

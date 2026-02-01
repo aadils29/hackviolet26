@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   Wallet,
   Landmark,
@@ -55,6 +56,27 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const [progress, setProgress] = useState({ currentLevel: 1, currentXp: 0 });
+
+  useEffect(() => {
+    async function fetchProgress() {
+      try {
+        const res = await fetch("/api/progress");
+        if (res.ok) {
+          const data = await res.json();
+          setProgress({ currentLevel: data.currentLevel, currentXp: data.currentXp });
+        }
+      } catch (error) {
+        console.error("Failed to fetch progress:", error);
+      }
+    }
+    fetchProgress();
+  }, []);
+
+  // Calculate XP progress within current level
+  const xpPerLevel = 100;
+  const xpInCurrentLevel = progress.currentXp % xpPerLevel;
 
   return (
     <>
@@ -106,8 +128,10 @@ export function Sidebar() {
               <User className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-medium text-sm">Learner</p>
-              <p className="text-xs text-muted-foreground">Level 1</p>
+              <p className="font-medium text-sm">{session?.user?.name || "Learner"}</p>
+              <p className="text-xs text-muted-foreground">
+                Level {progress.currentLevel} ({xpInCurrentLevel}/{xpPerLevel})
+              </p>
             </div>
           </div>
           <button

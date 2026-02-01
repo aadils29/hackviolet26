@@ -141,7 +141,7 @@ export default function LessonPage() {
         lastHeartLoss: new Date().toISOString(),
       };
       setUserProgress(updatedProgress);
-      
+
       // Save to API or localStorage
       if (session?.user) {
         fetch("/api/progress", {
